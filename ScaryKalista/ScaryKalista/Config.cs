@@ -23,22 +23,22 @@ namespace ScaryKalista
             ComboMenu = Menu.AddSubMenu("Combo");
             {
                 ComboMenu.Add("combo.useQ", new CheckBox("Use Q"));
+                ComboMenu.Add("combo.minManaQ", new Slider("Mininum {0}% mana to use Q", 40));
                 ComboMenu.Add("combo.useE", new CheckBox("Kill with E"));
-                ComboMenu.Add("combo.saveMana", new CheckBox("Save mana for E"));
             }
 
             //Harass
             HarassMenu = Menu.AddSubMenu("Harass");
             {
                 HarassMenu.Add("harass.useQ", new CheckBox("Use Q", false));
-                HarassMenu.Add("harass.minManaQ", new Slider("Mininum {0}% mana for Q", 50));
+                HarassMenu.Add("harass.minManaQ", new Slider("Mininum {0}% mana for Q", 60));
             }
 
             //LaneClear
             LaneMenu = Menu.AddSubMenu("LaneClear");
             {
-                LaneMenu.Add("laneclear.useQ", new CheckBox("Use Q"));
-                LaneMenu.Add("laneclear.minQ", new Slider("Mininum {0} minions for Q", 4, 2, 10));
+                //LaneMenu.Add("laneclear.useQ", new CheckBox("Use Q)"));
+                //LaneMenu.Add("laneclear.minQ", new Slider("Mininum {0} minions for Q", 4, 2, 10));
                 LaneMenu.Add("laneclear.useE", new CheckBox("Kill with E"));
                 LaneMenu.Add("laneclear.minE", new Slider("Mininum {0} minions for E", 3, 2, 10));
                 LaneMenu.Add("laneclear.minMana", new Slider("Mininum {0}% mana to LaneClear", 30));

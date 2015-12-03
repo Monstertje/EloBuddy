@@ -44,13 +44,13 @@ namespace ScaryKalista
         public static bool HasUndyingBuff(this AIHeroClient target)
         {
             // Tryndamere R
-            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "Undying Rage"))
+            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "UndyingRage"))
             {
                 return true;
             }
 
             // Zilean R
-            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "Chrono Shift"))
+            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "ChronoShift"))
             {
                 return true;
             }

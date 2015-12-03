@@ -9,7 +9,7 @@ namespace ScaryKalista
 {
     public static class Kalista
     {
-        private static bool fleeActivated;
+        private static bool _fleeActivated;
         public static void OnLoadingComplete(EventArgs args)
         {
             if (Player.Instance.ChampionName != "Kalista") return;
@@ -52,14 +52,14 @@ namespace ScaryKalista
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
             {
                 Modes.Flee();
-                fleeActivated = true;
+                _fleeActivated = true;
             }
 
             Modes.PermaActive();
 
-            if (fleeActivated && !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
+            if (_fleeActivated && !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
             {
-                fleeActivated = false;
+                _fleeActivated = false;
                 Orbwalker.DisableAttacking = false;
                 Orbwalker.DisableMovement = false;
             }

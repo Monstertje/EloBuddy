@@ -23,7 +23,7 @@ namespace ScaryKalista
                 && Spells.Q.IsReady()
                 && !Player.Instance.IsDashing())
             {
-                if (!Config.ComboMenu.IsChecked("combo.saveMana") || (Config.ComboMenu.IsChecked("combo.saveMana") && (Player.Instance.Mana - 70) > 40))
+                if (!(Player.Instance.ManaPercent < Config.ComboMenu.GetValue("combo.minManaQ")))
                 {
                     Spells.Q.Cast(target);
                 }
@@ -162,7 +162,7 @@ namespace ScaryKalista
 
             if (Config.MiscMenu.IsChecked("misc.harassEnemyE") && Spells.E.IsReady())
             {
-                if (Player.HasBuff("summonerexhaust")) return;
+                if (Player.HasBuff("summonerexhaust") || (Player.Instance.Mana - 40) < 40) return;
 
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)
                     || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
