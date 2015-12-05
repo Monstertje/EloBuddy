@@ -31,7 +31,7 @@ namespace ScaryKalista
             //Harass
             HarassMenu = Menu.AddSubMenu("Harass");
             {
-                HarassMenu.Add("harass.useQ", new CheckBox("Use Q", false));
+                HarassMenu.Add("harass.useQ", new CheckBox("Use Q"));
                 HarassMenu.Add("harass.minManaQ", new Slider("Mininum {0}% mana for Q", 60));
             }
 
@@ -49,7 +49,7 @@ namespace ScaryKalista
             JungleMenu = Menu.AddSubMenu("JungleClear");
             {
                 JungleMenu.Add("jungleclear.useE", new CheckBox("Kill big jungle camps with E"));
-                JungleMenu.Add("jungleclear.miniE", new CheckBox("Kill mini jungle monsters with E"));
+                JungleMenu.Add("jungleclear.miniE", new CheckBox("Kill mini jungle monsters with E", false));
             }
             
             //Flee
@@ -76,7 +76,7 @@ namespace ScaryKalista
             DrawMenu = Menu.AddSubMenu("Drawings");
             {
                 DrawMenu.Add("draw.Q", new CheckBox("Draw Q range"));
-                DrawMenu.Add("draw.W", new CheckBox("Draw W range"));
+                DrawMenu.Add("draw.W", new CheckBox("Draw W range", false));
                 DrawMenu.Add("draw.E", new CheckBox("Draw E range"));
                 DrawMenu.Add("draw.R", new CheckBox("Draw R range"));
                 DrawMenu.Add("draw.enemyE", new CheckBox("Draw E damage on enemy healthbar"));
