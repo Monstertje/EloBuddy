@@ -16,17 +16,16 @@ namespace ScaryKalista
 
             Config.Initialize();
             Spells.InitSpells();
-            WallJump.InitSpots();
+            if (Game.MapId == GameMapId.SummonersRift) WallJump.InitSpots();
             InitEvents();
         }
 
         private static void InitEvents()
         {
             DamageIndicator.DamageToUnit = Damages.GetActualDamage;
-
             Game.OnUpdate += OnUpdate;
-            Orbwalker.OnUnkillableMinion += Modes.OnUnkillableMinion;
             Drawing.OnDraw += OnDraw;
+            Orbwalker.OnUnkillableMinion += Modes.OnUnkillableMinion;
         }
 
         private static void OnUpdate(EventArgs args)
@@ -62,6 +61,7 @@ namespace ScaryKalista
                 _fleeActivated = false;
                 Orbwalker.DisableAttacking = false;
                 Orbwalker.DisableMovement = false;
+                Orbwalker.ForcedTarget = null;
             }
 
             DamageIndicator.EnemyEnabled = Config.DrawMenu.IsChecked("draw.enemyE");

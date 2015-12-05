@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
@@ -103,29 +104,34 @@ namespace ScaryKalista
 
         public static void Flee()
         {
-            var spot = WallJump.GetJumpSpot();
-
-            if (Spells.Q.IsReady() && spot != null)
+            if (Config.FleeMenu.IsChecked("flee.useJump") && Game.MapId == GameMapId.SummonersRift)
             {
-                Orbwalker.DisableAttacking = true;
-                Orbwalker.DisableMovement = true;
+                var spot = WallJump.GetJumpSpot();
+                if (Spells.Q.IsReady() && spot != null)
+                {
+                    Orbwalker.DisableAttacking = true;
+                    Orbwalker.DisableMovement = true;
 
-                WallJump.JumpWall();
+                    WallJump.JumpWall();
+                    return;
+                }
+                
             }
 
-            else
+            if(Config.FleeMenu.IsChecked("flee.attack"))
             {
                 Orbwalker.DisableAttacking = false;
                 Orbwalker.DisableMovement = false;
 
                 var target =
-                EntityManager.MinionsAndMonsters.CombinedAttackable
-                .FirstOrDefault(x => x.IsValidTarget(Player.Instance.AttackRange));
+                    ObjectManager.Get<Obj_AI_Base>()
+                    .FirstOrDefault(
+                        x => 
+                            x.IsValidTarget(Player.Instance.GetAutoAttackRange())
+                            && !x.IsMe 
+                            && !x.IsAlly);
 
-                if (target != null)
-                {
-                    Orbwalker.ForcedTarget = target;
-                }
+                Orbwalker.ForcedTarget = target;
             }
         }
 
@@ -141,22 +147,17 @@ namespace ScaryKalista
 
             if (Config.MiscMenu.IsChecked("misc.junglestealE") && Spells.E.IsReady())
             {
-                var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells.E.Range);
+                var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells.E.Range).ToArray();
 
-                if (!Config.JungleMenu.IsChecked("jungleclear.miniE"))
+                if (!Config.JungleMenu.IsChecked("jungleclear.miniE") 
+                    && minions.Any(x => x.IsRendKillable() && !x.Name.Contains("Mini")))
                 {
-                    if (minions.Any(x => x.IsRendKillable() && !x.Name.Contains("Mini")))
-                    {
-                        Spells.E.Cast();
-                    }
+                    Spells.E.Cast();
                 }
 
-                else
+                else if (minions.Any(x => x.IsRendKillable()))
                 {
-                    if (minions.Any(x => x.IsRendKillable()))
-                    {
-                        Spells.E.Cast();
-                    }
+                    Spells.E.Cast();
                 }
             }
 

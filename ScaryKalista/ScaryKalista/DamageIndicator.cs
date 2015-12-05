@@ -43,15 +43,12 @@ namespace ScaryKalista
 
         private static void OnEndScene(EventArgs args)
         {
-            if (_damageToUnit == null)
-            {
-                return;
-            }
+            if (_damageToUnit == null) return;
 
             if (EnemyEnabled)
             {
                 foreach (var hero in EntityManager.Heroes.Enemies
-                    .Where(x => x.IsValidTarget()
+                    .Where(x => x.IsValidTarget(Spells.E.Range + 200)
                             && x.IsHPBarRendered
                             && x.HasRendBuff()))
                 {
@@ -75,44 +72,73 @@ namespace ScaryKalista
                 {
                     if ((unit.Name.Contains("Blue") || unit.Name.Contains("Red")) && !unit.Name.Contains("Mini"))
                     {
-                        _height = 9; _width = 142; _xOffset = -4; _yOffset = -8;
+                        _height = 9;
+                        _width = 142;
+                        _xOffset = -4;
+                        _yOffset = -8;
                     }
-
                     else if (unit.Name.Contains("Dragon"))
                     {
-                        _height = 10; _width = 143; _xOffset = -4; _yOffset = -6;
+                        _height = 10;
+                        _width = 143;
+                        _xOffset = -4;
+                        _yOffset = -6;
                     }
                     else if (unit.Name.Contains("Baron"))
                     {
-                        _height = 12; _width = 191; _xOffset = -21; _yOffset = 16;
+                        _height = 12;
+                        _width = 191;
+                        _xOffset = -29;
+                        _yOffset = -7;
                     }
                     else if (unit.Name.Contains("Herald"))
                     {
-                        _height = 10; _width = 142; _xOffset = -4; _yOffset = -8;
+                        _height = 10;
+                        _width = 142;
+                        _xOffset = -4;
+                        _yOffset = -8;
                     }
                     else if ((unit.Name.Contains("Razorbeak") || unit.Name.Contains("Murkwolf")) && !unit.Name.Contains("Mini"))
                     {
-                        _width = 74; _height = 3; _xOffset = 30; _yOffset = -8;
+                        _width = 74;
+                        _height = 3;
+                        _xOffset = 30;
+                        _yOffset = -8;
                     }
                     else if (unit.Name.Contains("Krug") && !unit.Name.Contains("Mini"))
                     {
-                        _width = 80; _height = 3; _xOffset = 27; _yOffset = -8;
+                        _width = 80;
+                        _height = 3;
+                        _xOffset = 27;
+                        _yOffset = -8;
                     }
                     else if (unit.Name.Contains("Gromp"))
                     {
-                        _width = 86; _height = 3; _xOffset = 24; _yOffset = -7;
+                        _width = 86;
+                        _height = 3;
+                        _xOffset = 24;
+                        _yOffset = -7;
                     }
                     else if (unit.Name.Contains("Crab"))
                     {
-                        _width = 61; _height = 2; _xOffset = 36; _yOffset = 21;
+                        _width = 61;
+                        _height = 2;
+                        _xOffset = 36;
+                        _yOffset = 21;
                     }
                     else if (unit.Name.Contains("RedMini") || unit.Name.Contains("BlueMini") || unit.Name.Contains("RazorbeakMini"))
                     {
-                        _height = 2; _width = 49; _xOffset = 42; _yOffset = 6;
+                        _height = 2;
+                        _width = 49;
+                        _xOffset = 42;
+                        _yOffset = 6;
                     }
                     else if (unit.Name.Contains("KrugMini") || unit.Name.Contains("MurkwolfMini"))
                     {
-                        _height = 2; _width = 55; _xOffset = 39; _yOffset = 6;
+                        _height = 2;
+                        _width = 55;
+                        _xOffset = 39;
+                        _yOffset = 6;
                     }
                     else
                     {

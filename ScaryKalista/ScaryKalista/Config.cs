@@ -10,6 +10,7 @@ namespace ScaryKalista
         public static Menu HarassMenu { get; private set; }
         public static Menu LaneMenu { get; private set; }
         public static Menu JungleMenu { get; private set; }
+        public static Menu FleeMenu { get; private set; }
         public static Menu MiscMenu { get; private set; }
         public static Menu DrawMenu { get; private set; }
 
@@ -50,6 +51,13 @@ namespace ScaryKalista
                 JungleMenu.Add("jungleclear.useE", new CheckBox("Kill big jungle camps with E"));
                 JungleMenu.Add("jungleclear.miniE", new CheckBox("Kill mini jungle monsters with E"));
             }
+            
+            //Flee
+            FleeMenu = Menu.AddSubMenu("Flee");
+            {
+                FleeMenu.Add("flee.attack", new CheckBox("Attack champions/minions/monsters"));
+                FleeMenu.Add("flee.useJump", new CheckBox("Jump walls with Q on jump spots"));
+            }
 
             //Misc
             MiscMenu = Menu.AddSubMenu("Misc");
@@ -59,8 +67,8 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.harassEnemyE", new CheckBox("Harass enemy with E when minion can die"));
                 MiscMenu.Add("misc.unkillableE", new CheckBox("Kill unkillable minions with E"));
                 MiscMenu.Add("misc.castDragonW", new KeyBind("Send W to Dragon", false, KeyBind.BindTypes.HoldActive, "U".ToCharArray()[0]));
-                MiscMenu.Add("misc.castBaronW", new KeyBind("Send W to Baron", false, KeyBind.BindTypes.HoldActive, "I".ToCharArray()[0]));
-                MiscMenu.Add("misc.useR", new CheckBox("Save ally with R"));
+                MiscMenu.Add("misc.castBaronW", new KeyBind("Send W to Baron/Rift Herald", false, KeyBind.BindTypes.HoldActive, "I".ToCharArray()[0]));
+                MiscMenu.Add("misc.useR", new CheckBox("Use R to save ally"));
                 MiscMenu.Add("misc.healthR", new Slider("{0}% Health to save ally", 15, 5, 25));
             }
 

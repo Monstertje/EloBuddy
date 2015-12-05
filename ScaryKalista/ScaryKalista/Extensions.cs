@@ -21,7 +21,7 @@ namespace ScaryKalista
         public static bool IsRendKillable(this Obj_AI_Base target)
         {
             if (target == null 
-                || !target.IsValidTarget(Spells.E.Range + 250)
+                || !target.IsValidTarget(Spells.E.Range + 200)
                 || !target.HasRendBuff()
                 || target.Health <= 0
                 || !Spells.E.IsReady())
@@ -117,7 +117,7 @@ namespace ScaryKalista
 
         public static float GetTotalHealth(this Obj_AI_Base target)
         {
-            return target.Health + target.AllShield + target.AttackShield + target.MagicShield + target.HPRegenRate;
+            return target.Health + target.AllShield + target.AttackShield + target.MagicShield + (target.HPRegenRate * 2);
         }
 
         public static bool IsChecked(this Menu menu, string id)
