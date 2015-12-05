@@ -49,7 +49,7 @@ namespace ScaryKalista
             JungleMenu = Menu.AddSubMenu("JungleClear");
             {
                 JungleMenu.Add("jungleclear.useE", new CheckBox("Kill big jungle camps with E"));
-                JungleMenu.Add("jungleclear.miniE", new CheckBox("Kill mini jungle monsters with E", false));
+                JungleMenu.Add("jungleclear.miniE", new CheckBox("Kill mini jungle monsters with E (small wolf etc.)", false));
             }
             
             //Flee
