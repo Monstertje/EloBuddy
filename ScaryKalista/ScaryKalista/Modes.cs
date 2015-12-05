@@ -82,7 +82,7 @@ namespace ScaryKalista
                 && !Config.MiscMenu.IsChecked("misc.junglestealE")
                 && Spells.E.IsReady())
             {
-                var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells.E.Range);
+                var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells.E.Range).ToArray();
 
                 if (!Config.JungleMenu.IsChecked("jungleclear.miniE"))
                 {
@@ -92,12 +92,9 @@ namespace ScaryKalista
                     }
                 }
 
-                else
+                else if (minions.Any(x => x.IsRendKillable()))
                 {
-                    if (minions.Any(x => x.IsRendKillable()))
-                    {
-                        Spells.E.Cast();
-                    }
+                    Spells.E.Cast();
                 }
             }
         }
@@ -149,10 +146,12 @@ namespace ScaryKalista
             {
                 var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells.E.Range).ToArray();
 
-                if (!Config.JungleMenu.IsChecked("jungleclear.miniE") 
-                    && minions.Any(x => x.IsRendKillable() && !x.Name.Contains("Mini")))
+                if (!Config.JungleMenu.IsChecked("jungleclear.miniE"))
                 {
-                    Spells.E.Cast();
+                    if (minions.Any(x => x.IsRendKillable() && !x.Name.Contains("Mini")))
+                    {
+                        Spells.E.Cast();
+                    }
                 }
 
                 else if (minions.Any(x => x.IsRendKillable()))
