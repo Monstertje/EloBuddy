@@ -36,6 +36,19 @@ namespace ScaryKalista
                 {
                     return false;
                 }
+
+                if (hero.ChampionName == "Blitzcrank")
+                {
+                    if (!hero.HasBuff("BlitzcrankManaBarrierCD") && !hero.HasBuff("ManaBarrier"))
+                    {
+                        return Damages.GetActualDamage(target) > (target.GetTotalHealth() + (hero.Mana / 2));
+                    }
+
+                    if (hero.HasBuff("ManaBarrier") && !(hero.AllShield > 0))
+                    {
+                        return false;
+                    }
+                }
             }
 
             return Damages.GetActualDamage(target) > target.GetTotalHealth();

@@ -15,10 +15,7 @@ namespace ScaryKalista
         private static int _yOffset;
 
         public static Color EnemyColor = Color.Lime;
-        public static bool EnemyEnabled = true;
-
         public static Color JungleColor = Color.White;
-        public static bool JungleEnabled = true;
 
         private static DamageToUnitDelegate _damageToUnit;
         public delegate float DamageToUnitDelegate(Obj_AI_Base minion);
@@ -45,7 +42,7 @@ namespace ScaryKalista
         {
             if (_damageToUnit == null) return;
 
-            if (EnemyEnabled)
+            if (Config.DrawMenu.IsChecked("draw.enemyE"))
             {
                 foreach (var hero in EntityManager.Heroes.Enemies
                     .Where(x => x.IsValidTarget(Spells.E.Range + 200)
@@ -61,7 +58,7 @@ namespace ScaryKalista
                 }
             }
 
-            if (JungleEnabled)
+            if (Config.DrawMenu.IsChecked("draw.jungleE"))
             {
                 foreach (
                 var unit in

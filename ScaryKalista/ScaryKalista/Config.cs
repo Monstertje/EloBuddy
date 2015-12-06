@@ -26,6 +26,7 @@ namespace ScaryKalista
                 ComboMenu.Add("combo.useQ", new CheckBox("Use Q"));
                 ComboMenu.Add("combo.minManaQ", new Slider("Mininum {0}% mana to use Q", 40));
                 ComboMenu.Add("combo.useE", new CheckBox("Kill with E"));
+                ComboMenu.Add("combo.gapClose", new CheckBox("Use minions/jungle to gap close"));
             }
 
             //Harass
@@ -80,9 +81,10 @@ namespace ScaryKalista
                 DrawMenu.Add("draw.E", new CheckBox("Draw E range"));
                 DrawMenu.Add("draw.R", new CheckBox("Draw R range"));
                 DrawMenu.Add("draw.enemyE", new CheckBox("Draw E damage on enemy healthbar"));
+                DrawMenu.Add("draw.percentage", new CheckBox("Draw E damage percentage enemy"));
                 DrawMenu.Add("draw.jungleE", new CheckBox("Draw E damage on jungle healthbar"));
                 DrawMenu.Add("draw.killableMinions", new CheckBox("Draw E killable minions"));
-                DrawMenu.Add("draw.stacks", new CheckBox("Draw enemy E stacks"));
+                DrawMenu.Add("draw.stacks", new CheckBox("Draw E stacks enemy", false));
                 DrawMenu.Add("draw.jumpSpots", new CheckBox("Draw jump spots"));
             }
         }

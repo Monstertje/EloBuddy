@@ -39,6 +39,15 @@ namespace ScaryKalista
                     Spells.E.Cast();
                 }
             }
+
+            if (Config.ComboMenu.IsChecked("combo.gapClose"))
+            {
+                var gapCloseTarget = 
+                    EntityManager.MinionsAndMonsters.CombinedAttackable
+                        .FirstOrDefault(x => x.IsValidTarget(Player.Instance.GetAutoAttackRange()));
+
+                Orbwalker.ForcedTarget = Player.Instance.IsInAutoAttackRange(target) ? null : gapCloseTarget;
+            }
         }
 
         public static void Harass()

@@ -63,9 +63,6 @@ namespace ScaryKalista
                 Orbwalker.DisableMovement = false;
                 Orbwalker.ForcedTarget = null;
             }
-
-            DamageIndicator.EnemyEnabled = Config.DrawMenu.IsChecked("draw.enemyE");
-            DamageIndicator.JungleEnabled = Config.DrawMenu.IsChecked("draw.jungleE");
         }
 
         private static void OnDraw(EventArgs args)
@@ -101,17 +98,35 @@ namespace ScaryKalista
                 }
             }
 
+            if (Config.DrawMenu.IsChecked("draw.percentage"))
+            {
+
+                foreach (var enemy in
+                    EntityManager.Heroes.Enemies
+                    .Where(x => Player.Instance.Distance(x) <= 2000f && !x.IsDead && x.IsVisible && x.HasRendBuff()))
+                {
+                    var percent = Math.Floor((Damages.GetActualDamage(enemy) / enemy.GetTotalHealth()) * 100);
+
+                    if (percent >= 100 && !enemy.IsRendKillable())
+                    {
+                        Drawing.DrawText(enemy.HPBarPosition.X + 140, enemy.HPBarPosition.Y + 5, System.Drawing.Color.Red, "Spellshield/undying buff!", 20);
+                    }
+                    else
+                    {
+                        Drawing.DrawText(enemy.HPBarPosition.X + 140, enemy.HPBarPosition.Y + 5, System.Drawing.Color.White, 
+                        enemy.IsRendKillable() ? "Killable!" : percent + "%", 20);
+                    }
+                }
+            }
+
             if (Config.DrawMenu.IsChecked("draw.stacks"))
             {
                 foreach (var enemy in
                     EntityManager.Heroes.Enemies
-                    .Where(x => Player.Instance.Distance(x) <= 2000f && !x.IsDead && x.IsVisible))
+                    .Where(x => Player.Instance.Distance(x) <= 2000f && !x.IsDead && x.IsVisible && x.HasRendBuff()))
                 {
-                    var stacks = enemy.HasRendBuff() ? enemy.GetRendBuff().Count : 0;
-                    if (stacks > 0)
-                    {
-                        Drawing.DrawText(enemy.Position.X, enemy.Position.Y, System.Drawing.Color.White, "Stacks: " + stacks);
-                    }
+                    var stacks = enemy.GetRendBuff().Count;
+                    Drawing.DrawText(enemy.Position.X, enemy.Position.Y, System.Drawing.Color.White, "Stacks: " + stacks);
                 }
             }
 
