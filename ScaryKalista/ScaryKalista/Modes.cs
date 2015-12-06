@@ -223,6 +223,24 @@ namespace ScaryKalista
                     Spells.W.Cast(_baron.To3DWorld());
                 }
             }
+
+            if (Config.MiscMenu.IsChecked("misc.unkillableE") 
+                && Spells.E.IsReady()
+                && !Player.HasBuff("summonerexhaust")
+                && !((Player.Instance.Mana - 40) < 40)
+                && (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear) 
+                || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)))
+            {
+                if (EntityManager.MinionsAndMonsters.GetLaneMinions(
+                    EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.E.Range)
+                    .Any(x =>
+                            x.IsValidTarget()
+                            && x.IsRendKillable()
+                            && Prediction.Health.GetPrediction(x, 500) <= 0))
+                {
+                    Spells.E.Cast();
+                }
+            }
         }
 
         public static void OnUnkillableMinion(Obj_AI_Base unit, Orbwalker.UnkillableMinionArgs args)

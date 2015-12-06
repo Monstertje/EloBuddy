@@ -25,7 +25,7 @@ namespace ScaryKalista
             DamageIndicator.DamageToUnit = Damages.GetActualDamage;
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
-            Orbwalker.OnUnkillableMinion += Modes.OnUnkillableMinion;
+            //Orbwalker.OnUnkillableMinion += Modes.OnUnkillableMinion;
         }
 
         private static void OnUpdate(EventArgs args)
