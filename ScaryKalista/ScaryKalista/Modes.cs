@@ -224,19 +224,23 @@ namespace ScaryKalista
                 }
             }
 
-            if (Config.MiscMenu.IsChecked("misc.unkillableE") 
-                && Spells.E.IsReady()
-                && !Player.HasBuff("summonerexhaust")
-                && !((Player.Instance.Mana - 40) < 40)
-                && (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear) 
-                || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)))
+            if (Config.MiscMenu.IsChecked("misc.unkillableE") && Spells.E.IsReady())
             {
+                if (Player.HasBuff("summonerexhaust")
+                    || (Player.Instance.Mana - 40) < 40
+                    || !(Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)
+                        || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)))
+                {
+                    return;
+                }
+
                 if (EntityManager.MinionsAndMonsters.GetLaneMinions(
                     EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.E.Range)
                     .Any(x =>
                             x.IsValidTarget()
                             && x.IsRendKillable()
-                            && Prediction.Health.GetPrediction(x, 500) <= 0))
+                            && Prediction.Health.GetPrediction(x, 500) <= 0
+                            && Prediction.Health.GetPrediction(x, 100) > 0))
                 {
                     Spells.E.Cast();
                 }
