@@ -32,7 +32,7 @@ namespace ScaryKalista
 
         public static float GetRawRendDamage(Obj_AI_Base target)
         {
-            var stacks = (target.HasRendBuff() ? target.GetRendBuff().Count : 0) - 1;
+            int stacks = (target.HasRendBuff() ?  target.GetRendBuffCount() : 0) - 1;
             if (stacks > -1)
             {
                 var index = Spells.E.Level - 1;

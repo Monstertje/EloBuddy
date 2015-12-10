@@ -13,8 +13,16 @@ namespace ScaryKalista
             return target.GetRendBuff() != null;
         }
 
+        public static int GetRendBuffCount(this Obj_AI_Base target)
+        {
+            if (Kalista.RendTargets.ContainsKey(target.NetworkId))
+                return Kalista.RendTargets[target.NetworkId];
+            return 0;
+        }
         public static BuffInstance GetRendBuff(this Obj_AI_Base target)
         {
+            
+            
             return target.Buffs.Find(b => b.Caster.IsMe && b.IsValid() && b.DisplayName == "KalistaExpungeMarker");
         }
 

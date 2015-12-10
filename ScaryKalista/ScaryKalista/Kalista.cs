@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -25,7 +26,40 @@ namespace ScaryKalista
             DamageIndicator.DamageToUnit = Damages.GetActualDamage;
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
+            Obj_AI_Base.OnBuffLose += Obj_AI_Base_OnBuffLose;
+            Obj_AI_Base.OnBuffGain += Obj_AI_Base_OnBuffGain;
+            Orbwalker.OnPostAttack += Orbwalker_OnPostAttack;
+            
             //Orbwalker.OnUnkillableMinion += Modes.OnUnkillableMinion;
+        }
+
+        static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
+        {
+            if (target == null || target.IsDead || !target.IsValid) return;
+            if (!RendTargets.ContainsKey(target.NetworkId))
+                RendTargets[target.NetworkId] = 0;
+            RendTargets[target.NetworkId] += 1;
+        }
+        internal static Dictionary<int, int> RendTargets = new Dictionary<int, int>();
+        private static void Obj_AI_Base_OnBuffGain(Obj_AI_Base sender, Obj_AI_BaseBuffGainEventArgs args)
+        {
+            if (sender == null || sender.IsDead || !sender.IsValid) return;
+            if (args.Buff.Name == "kalistaexpungemarker")
+            {
+                if (!RendTargets.ContainsKey(sender.NetworkId))
+                    RendTargets[sender.NetworkId] = 0;
+                RendTargets[sender.NetworkId] += 1;
+            }
+        }
+
+
+        private static void Obj_AI_Base_OnBuffLose(Obj_AI_Base sender, Obj_AI_BaseBuffLoseEventArgs args)
+        {
+            if (sender == null || sender.IsDead || !sender.IsValid) return;
+            if (args.Buff.Name == "kalistaexpungemarker")
+            {
+                RendTargets.Remove(sender.NetworkId);
+            }
         }
 
         private static void OnUpdate(EventArgs args)
@@ -65,8 +99,23 @@ namespace ScaryKalista
             }
         }
 
+        private static void DrawHisBuffs(AIHeroClient target)
+        {
+            //Chat.Print("drawing");
+            var pos = target.Position.WorldToScreen();
+            var buffs = target.Buffs.ToArray();
+            for (int i = 0; i < buffs.Length; i++)
+            {
+                Drawing.DrawText(pos.X, pos.Y + 15 * (i+1), System.Drawing.Color.White, buffs[i].Name);
+            }
+        }
         private static void OnDraw(EventArgs args)
         {
+            var target = TargetSelector.SelectedTarget;
+            if (target != null)
+            {
+                DrawHisBuffs(target);
+            }
             if (Config.DrawMenu.IsChecked("draw.Q"))
             {
                 Circle.Draw(Color.DarkRed, Spells.Q.Range, Player.Instance.Position);
