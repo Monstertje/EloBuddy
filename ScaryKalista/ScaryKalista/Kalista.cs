@@ -98,24 +98,8 @@ namespace ScaryKalista
                 Orbwalker.ForcedTarget = null;
             }
         }
-
-        private static void DrawHisBuffs(AIHeroClient target)
-        {
-            //Chat.Print("drawing");
-            var pos = target.Position.WorldToScreen();
-            var buffs = target.Buffs.ToArray();
-            for (int i = 0; i < buffs.Length; i++)
-            {
-                Drawing.DrawText(pos.X, pos.Y + 15 * (i+1), System.Drawing.Color.White, buffs[i].Name);
-            }
-        }
         private static void OnDraw(EventArgs args)
         {
-            var target = TargetSelector.SelectedTarget;
-            if (target != null)
-            {
-                DrawHisBuffs(target);
-            }
             if (Config.DrawMenu.IsChecked("draw.Q"))
             {
                 Circle.Draw(Color.DarkRed, Spells.Q.Range, Player.Instance.Position);
