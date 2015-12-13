@@ -1,4 +1,6 @@
-﻿using EloBuddy.SDK.Menu;
+﻿using System.Linq;
+using EloBuddy.SDK;
+using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 
 namespace ScaryKalista
@@ -13,9 +15,12 @@ namespace ScaryKalista
         public static Menu FleeMenu { get; private set; }
         public static Menu MiscMenu { get; private set; }
         public static Menu DrawMenu { get; private set; }
+        public static Menu BalistaMenu { get; private set; }
 
         public static void Initialize()
         {
+            var blitzcrank = EntityManager.Heroes.Allies.Any(x => x.ChampionName == "Blitzcrank");
+
             //Initialize the menu
             Menu = MainMenu.AddMenu("Scary Kalista", "ScaryKalista");
             Menu.AddGroupLabel("Welcome to Scary Kalista!");
@@ -73,6 +78,22 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.healthR", new Slider("{0}% Health to save ally", 15, 5, 25));
             }
 
+            //Balista
+            if (blitzcrank)
+            {
+                BalistaMenu = Menu.AddSubMenu("Balista");
+                {
+                    BalistaMenu.Add("balista.comboOnly", new CheckBox("Only use Balista in combo mode"));
+                    BalistaMenu.Add("balista.distance", new Slider("Minimum distance between you and Blitzcrank: {0}", 400, 0, 1200));
+                    BalistaMenu.Add("balista.sep", new Separator());
+                    BalistaMenu.Add("balista.label", new Label("Use Balista for:"));
+                    foreach (var enemy in EntityManager.Heroes.Enemies)
+                    {
+                        BalistaMenu.Add("balista." + enemy.ChampionName, new CheckBox(enemy.ChampionName));
+                    }
+                }
+            }
+
             //Drawings
             DrawMenu = Menu.AddSubMenu("Drawings");
             {
@@ -86,6 +107,7 @@ namespace ScaryKalista
                 DrawMenu.Add("draw.killableMinions", new CheckBox("Draw E killable minions"));
                 DrawMenu.Add("draw.stacks", new CheckBox("Draw E stacks enemy", false));
                 DrawMenu.Add("draw.jumpSpots", new CheckBox("Draw jump spots"));
+                if (blitzcrank) DrawMenu.Add("draw.balista", new CheckBox("Draw Balista range"));
             }
         }
     }

@@ -11,9 +11,9 @@ namespace ScaryKalista
     {
         public static List<Vector3[]> JumpSpots = new List<Vector3[]>();
         private static float _lastMoveClick;
-        private static float lastDistance;
-        private static float currentDistance;
-        private static bool jumped;
+        private static float _lastDistance;
+        private static float _currentDistance;
+        private static bool _jumped;
 
         public static Vector3[] GetJumpSpot()
         {
@@ -32,27 +32,24 @@ namespace ScaryKalista
             {
                 if (Player.Instance.Distance(spot[0]) <= 4)
                 {
-                    Console.WriteLine("Cast, distance: " + +Player.Instance.Distance(spot[0]));
                     Spells.Q.Cast(spot[1]);
                     Player.IssueOrder(GameObjectOrder.MoveTo, spot[1]);
                     _lastMoveClick = Environment.TickCount;
-                    jumped = true;
+                    _jumped = true;
                 }
                 else if (Player.Instance.Distance(spot[0]) > 4
                     && Player.Instance.Distance(spot[0]) < 60)
                 {
-                    lastDistance = currentDistance;
-                    currentDistance = Player.Instance.Distance(spot[0]);
-                    if (lastDistance == currentDistance)
+                    _lastDistance = _currentDistance;
+                    _currentDistance = Player.Instance.Distance(spot[0]);
+                    if (_lastDistance == _currentDistance)
                     {
-                        Console.WriteLine("Reset, distance: " + +Player.Instance.Distance(spot[0]));
                         Player.IssueOrder(GameObjectOrder.MoveTo, spot[1]);
                         _lastMoveClick = Environment.TickCount;
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Walk, distance: " + Player.Instance.Distance(spot[0]));
                     Player.IssueOrder(GameObjectOrder.MoveTo, spot[0]);
                     _lastMoveClick = Environment.TickCount;
                 }

@@ -10,11 +10,20 @@ namespace ScaryKalista
 {
     public static class Kalista
     {
+        public static AIHeroClient Soulbound
+        {
+            get { return EntityManager.Heroes.Allies.FirstOrDefault(x => x.HasBuff("kalistacoopstrikeally")); }
+        }
+        public static bool BalistaPossible
+        {
+            get { return Soulbound != null && Soulbound.ChampionName == "Blitzcrank"; }
+        }
         private static bool _fleeActivated;
+
         public static void OnLoadingComplete(EventArgs args)
         {
             if (Player.Instance.ChampionName != "Kalista") return;
-
+            
             Config.Initialize();
             Spells.InitSpells();
             if (Game.MapId == GameMapId.SummonersRift) WallJump.InitSpots();
@@ -24,45 +33,36 @@ namespace ScaryKalista
         private static void InitEvents()
         {
             DamageIndicator.DamageToUnit = Damages.GetActualDamage;
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnTick;
             Drawing.OnDraw += OnDraw;
-            Obj_AI_Base.OnBuffLose += Obj_AI_Base_OnBuffLose;
             Obj_AI_Base.OnBuffGain += Obj_AI_Base_OnBuffGain;
-            Orbwalker.OnPostAttack += Orbwalker_OnPostAttack;
-            
-            //Orbwalker.OnUnkillableMinion += Modes.OnUnkillableMinion;
+            Orbwalker.OnUnkillableMinion += Modes.OnUnkillableMinion;
         }
 
-        static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
+        private static void Obj_AI_Base_OnBuffGain(Obj_AI_Base target, Obj_AI_BaseBuffGainEventArgs args)
         {
-            if (target == null || target.IsDead || !target.IsValid) return;
-            if (!RendTargets.ContainsKey(target.NetworkId))
-                RendTargets[target.NetworkId] = 0;
-            RendTargets[target.NetworkId] += 1;
-        }
-        internal static Dictionary<int, int> RendTargets = new Dictionary<int, int>();
-        private static void Obj_AI_Base_OnBuffGain(Obj_AI_Base sender, Obj_AI_BaseBuffGainEventArgs args)
-        {
-            if (sender == null || sender.IsDead || !sender.IsValid) return;
-            if (args.Buff.Name == "kalistaexpungemarker")
+            if (!BalistaPossible) return;
+
+            if (args.Buff.DisplayName == "RocketGrab" && target.IsEnemy && Spells.R.IsReady())
             {
-                if (!RendTargets.ContainsKey(sender.NetworkId))
-                    RendTargets[sender.NetworkId] = 0;
-                RendTargets[sender.NetworkId] += 1;
+                var hero = target as AIHeroClient;
+                if (hero == null 
+                    || !Config.BalistaMenu.IsChecked("balista." + hero.ChampionName)
+                    || (Config.BalistaMenu.IsChecked("balista.comboOnly") && !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)))
+                {
+                    return;
+                }
+
+                if (hero.HasBuff("RocketGrab") && hero.IsValidTarget()
+                    && Player.Instance.Distance(Soulbound) >= Config.BalistaMenu.GetValue("balista.distance")
+                    && Spells.R.IsInRange(Soulbound))
+                {
+                    Core.DelayAction(() => Spells.R.Cast(), 1);
+                }
             }
         }
 
-
-        private static void Obj_AI_Base_OnBuffLose(Obj_AI_Base sender, Obj_AI_BaseBuffLoseEventArgs args)
-        {
-            if (sender == null || sender.IsDead || !sender.IsValid) return;
-            if (args.Buff.Name == "kalistaexpungemarker")
-            {
-                RendTargets.Remove(sender.NetworkId);
-            }
-        }
-
-        private static void OnUpdate(EventArgs args)
+        private static void OnTick(EventArgs args)
         {
             if (Player.Instance.IsDead) return;
 
@@ -169,6 +169,11 @@ namespace ScaryKalista
                 {
                     Circle.Draw(Color.DarkGray, 30f, spot[0]);
                 }
+            }
+
+            if (BalistaPossible && Config.DrawMenu.IsChecked("draw.balista"))
+            {
+                Circle.Draw(Color.Aqua, Config.BalistaMenu.GetValue("balista.distance"), Player.Instance.Position);
             }
         }
     }

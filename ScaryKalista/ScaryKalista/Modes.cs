@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -9,8 +10,6 @@ namespace ScaryKalista
 {
     class Modes
     {
-        private static AIHeroClient _soulBound;
-
         private static Vector2 _baron = new Vector2(5007.124f, 10471.45f);
         private static Vector2 _dragon = new Vector2(9866.148f, 4414.014f);
 
@@ -197,12 +196,11 @@ namespace ScaryKalista
 
             if (Config.MiscMenu.IsChecked("misc.useR") && Spells.R.IsReady())
             {
-                _soulBound = EntityManager.Heroes.Allies.FirstOrDefault(hero => hero.HasBuff("kalistacoopstrikeally"));
+                if (Kalista.Soulbound == null) return;
 
-                if (_soulBound == null) return;
-
-                if (_soulBound.HealthPercent <= Config.MiscMenu.GetValue("misc.healthR")
-                    && _soulBound.CountEnemiesInRange(500) > 0)
+                if (Kalista.Soulbound.HealthPercent <= Config.MiscMenu.GetValue("misc.healthR")
+                    && Kalista.Soulbound.IsValidTarget(Spells.R.Range)
+                    && Kalista.Soulbound.CountEnemiesInRange(500) > 0)
                 {
                     Spells.R.Cast();
                 }
@@ -221,28 +219,6 @@ namespace ScaryKalista
                 if (Player.Instance.Distance(_baron) <= Spells.W.Range)
                 {
                     Spells.W.Cast(_baron.To3DWorld());
-                }
-            }
-
-            if (Config.MiscMenu.IsChecked("misc.unkillableE") && Spells.E.IsReady())
-            {
-                if (Player.HasBuff("summonerexhaust")
-                    || (Player.Instance.Mana - 40) < 40
-                    || !(Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)
-                        || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)))
-                {
-                    return;
-                }
-
-                if (EntityManager.MinionsAndMonsters.GetLaneMinions(
-                    EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.E.Range)
-                    .Any(x =>
-                            x.IsValidTarget()
-                            && x.IsRendKillable()
-                            && Prediction.Health.GetPrediction(x, 500) <= 0
-                            && Prediction.Health.GetPrediction(x, 100) > 0))
-                {
-                    Spells.E.Cast();
                 }
             }
         }

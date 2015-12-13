@@ -6,10 +6,10 @@ namespace ScaryKalista
 {
     class Spells
     {
-        public static Spell.Skillshot Q;
-        public static Spell.Targeted W;
-        public static Spell.Active E;
-        public static Spell.Active R;
+        public static Spell.Skillshot Q { get; private set; }
+        public static Spell.Targeted W { get; private set; }
+        public static Spell.Active E { get; private set; }
+        public static Spell.Active R { get; private set; }
 
         public static void InitSpells()
         {
