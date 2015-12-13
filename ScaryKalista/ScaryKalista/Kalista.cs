@@ -53,11 +53,11 @@ namespace ScaryKalista
                     return;
                 }
 
-                if (hero.HasBuff("RocketGrab") && hero.IsValidTarget()
+                if (hero.IsValidTarget() 
                     && Player.Instance.Distance(Soulbound) >= Config.BalistaMenu.GetValue("balista.distance")
                     && Spells.R.IsInRange(Soulbound))
                 {
-                    Core.DelayAction(() => Spells.R.Cast(), 1);
+                    Spells.R.Cast();
                 }
             }
         }
