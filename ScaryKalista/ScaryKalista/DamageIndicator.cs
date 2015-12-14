@@ -45,7 +45,7 @@ namespace ScaryKalista
             if (Config.DrawMenu.IsChecked("draw.enemyE"))
             {
                 foreach (var hero in EntityManager.Heroes.Enemies
-                    .Where(x => x.IsValidTarget(Spells.E.Range + 200)
+                    .Where(x => x.IsValidTarget()
                             && x.IsHPBarRendered
                             && x.HasRendBuff()))
                 {
@@ -63,7 +63,7 @@ namespace ScaryKalista
                 foreach (
                 var unit in
                 EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells.E.Range)
-                        .Where(x => x.IsValidTarget(Spells.E.Range)
+                        .Where(x => x.IsValidTarget()
                                     && x.IsHPBarRendered
                                     && x.HasRendBuff()))
                 {
