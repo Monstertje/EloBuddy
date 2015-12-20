@@ -38,10 +38,10 @@ namespace ScaryKalista
 
         private static void TryUseItem(Item item, AIHeroClient target)
         {
-            if (target.IsValidTarget(550)
+            if (!target.IsValidTarget(550)
                 || !Config.ItemMenu.IsChecked("item." + item.ItemInfo.Name)
-                || !(Config.ItemMenu.GetValue("item." + item.ItemInfo.Name + "MyHp") > Player.Instance.HealthPercent)
-                || !(Config.ItemMenu.GetValue("item." + item.ItemInfo.Name + "EnemyHP") > target.HealthPercent))
+                || Config.ItemMenu.GetValue("item." + item.ItemInfo.Name + "MyHp") < Player.Instance.HealthPercent
+                || Config.ItemMenu.GetValue("item." + item.ItemInfo.Name + "EnemyHP") < target.HealthPercent)
             {
                 return;
             }

@@ -43,7 +43,7 @@ namespace ScaryKalista
                     EntityManager.MinionsAndMonsters.CombinedAttackable
                         .FirstOrDefault(x => x.IsValidTarget(Player.Instance.GetAutoAttackRange()));
 
-                Orbwalker.ForcedTarget = Player.Instance.IsInAutoAttackRange(target) ? null : gapCloseTarget;
+                Orbwalker.ForcedTarget = EntityManager.Heroes.Enemies.Any(x => Player.Instance.IsInAutoAttackRange(x)) ? null : gapCloseTarget;
             }
         }
 
