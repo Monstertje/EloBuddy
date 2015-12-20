@@ -63,6 +63,7 @@
     <Compile Include="DamageIndicator.cs" />
     <Compile Include="Damages.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Items.cs" />
     <Compile Include="Kalista.cs" />
     <Compile Include="Modes.cs" />
     <Compile Include="Program.cs" />

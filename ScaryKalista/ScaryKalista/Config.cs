@@ -16,6 +16,7 @@ namespace ScaryKalista
         public static Menu MiscMenu { get; private set; }
         public static Menu DrawMenu { get; private set; }
         public static Menu BalistaMenu { get; private set; }
+        public static Menu ItemMenu { get; private set; }
 
         public static void Initialize()
         {
@@ -76,6 +77,21 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.castBaronW", new KeyBind("Send W to Baron/Rift Herald", false, KeyBind.BindTypes.HoldActive, "I".ToCharArray()[0]));
                 MiscMenu.Add("misc.useR", new CheckBox("Use R to save ally"));
                 MiscMenu.Add("misc.healthR", new Slider("{0}% Health to save ally", 15, 5, 25));
+            }
+
+            //Items
+            ItemMenu = Menu.AddSubMenu("Items");
+            {
+                var cutlass = Items.BilgewaterCutlass;
+                ItemMenu.Add("item." + cutlass.ItemInfo.Name, new CheckBox("Use " + cutlass.ItemInfo.Name));
+                ItemMenu.Add("item." + cutlass.ItemInfo.Name + "MyHp", new Slider("Your HP lower than {0}%", 80));
+                ItemMenu.Add("item." + cutlass.ItemInfo.Name + "EnemyHp", new Slider("Enemy HP lower than {0}%", 80));
+                ItemMenu.Add("item.sep", new Separator());
+
+                var bork = Items.BladeOfTheRuinedKing;
+                ItemMenu.Add("item." + bork.ItemInfo.Name, new CheckBox("Use "+ bork.ItemInfo.Name));
+                ItemMenu.Add("item." + bork.ItemInfo.Name + "MyHp", new Slider("Your HP lower than {0}%", 80));
+                ItemMenu.Add("item." + bork.ItemInfo.Name + "EnemyHp", new Slider("Enemy HP lower than {0}%", 80));
             }
 
             //Balista

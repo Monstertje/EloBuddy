@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -24,9 +23,10 @@ namespace ScaryKalista
         {
             if (Player.Instance.ChampionName != "Kalista") return;
             
-            Config.Initialize();
             Spells.InitSpells();
+            Items.InitItems();
             if (Game.MapId == GameMapId.SummonersRift) WallJump.InitSpots();
+            Config.Initialize();
             InitEvents();
         }
 
