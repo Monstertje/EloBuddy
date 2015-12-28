@@ -70,11 +70,30 @@ namespace ScaryKalista
                 return;
             }
 
+            var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(
+                EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range).ToArray();
+
+            if (Config.LaneMenu.IsChecked("laneclear.useQ"))
+            {
+                var predictionResult =
+                    (from minion in minions
+                     let pred = Spells.Q.GetPrediction(minion)
+                     let count = pred.GetCollisionObjects<Obj_AI_Minion>().Count(x =>
+                                    x.GetTotalHealth() < Damages.GetQDamage(x) 
+                                    && x.IsValidTarget() && x.IsEnemy)
+                     where count >= Config.LaneMenu.GetValue("laneclear.minQ")
+                     where !Player.Instance.IsDashing()
+                     select pred).FirstOrDefault();
+
+                if (Spells.Q.IsReady() && predictionResult != null)
+                {
+                    Spells.Q.Cast(predictionResult.CastPosition);
+                }
+            }
+
             if (Config.LaneMenu.IsChecked("laneclear.useE") && Spells.E.IsReady())
             {
-                var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.E.Range);
                 var count = minions.Count(x => x.IsRendKillable() && x.Health > 10);
-
                 if (count >= Config.LaneMenu.GetValue("laneclear.minE"))
                 {
                     Spells.E.Cast();
@@ -169,8 +188,9 @@ namespace ScaryKalista
             {
                 if (Player.HasBuff("summonerexhaust") || (Player.Instance.Mana - 40) < 40) return;
 
-                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)
-                    || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
+                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass) 
+                    || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)
+                    || (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && Config.MiscMenu.IsChecked("misc.harassEnemyECombo")))
                 {
                     var minion =
                         EntityManager.MinionsAndMonsters.GetLaneMinions(

@@ -31,6 +31,8 @@ namespace ScaryKalista
             {
                 ComboMenu.Add("combo.useQ", new CheckBox("Use Q"));
                 ComboMenu.Add("combo.minManaQ", new Slider("Mininum {0}% mana to use Q", 40));
+
+                ComboMenu.Add("combo.sep1", new Separator());
                 ComboMenu.Add("combo.useE", new CheckBox("Kill with E"));
                 ComboMenu.Add("combo.gapClose", new CheckBox("Use minions/jungle to gap close"));
             }
@@ -45,10 +47,14 @@ namespace ScaryKalista
             //LaneClear
             LaneMenu = Menu.AddSubMenu("LaneClear");
             {
-                //LaneMenu.Add("laneclear.useQ", new CheckBox("Use Q)"));
-                //LaneMenu.Add("laneclear.minQ", new Slider("Mininum {0} minions for Q", 4, 2, 10));
+                LaneMenu.Add("laneclear.useQ", new CheckBox("Use Q"));
+                LaneMenu.Add("laneclear.minQ", new Slider("Mininum {0} minions for Q", 3, 2, 10));
+
+                LaneMenu.Add("laneclear.sep1", new Separator());
                 LaneMenu.Add("laneclear.useE", new CheckBox("Kill with E"));
                 LaneMenu.Add("laneclear.minE", new Slider("Mininum {0} minions for E", 3, 2, 10));
+
+                LaneMenu.Add("laneclear.sep2", new Separator());
                 LaneMenu.Add("laneclear.minMana", new Slider("Mininum {0}% mana to LaneClear", 30));
             }
 
@@ -69,12 +75,22 @@ namespace ScaryKalista
             //Misc
             MiscMenu = Menu.AddSubMenu("Misc");
             {
+                MiscMenu.Add("misc.labelSteal", new Label("Stealing: you don't have to hold any button"));
                 MiscMenu.Add("misc.killstealE", new CheckBox("Killsteal with E"));
                 MiscMenu.Add("misc.junglestealE", new CheckBox("Junglesteal with E"));
-                MiscMenu.Add("misc.harassEnemyE", new CheckBox("Harass enemy with E when minion can die"));
+
+                MiscMenu.Add("misc.sep1", new Separator());
                 MiscMenu.Add("misc.unkillableE", new CheckBox("Kill unkillable minions with E"));
-                MiscMenu.Add("misc.castDragonW", new KeyBind("Send W to Dragon", false, KeyBind.BindTypes.HoldActive, "U".ToCharArray()[0]));
-                MiscMenu.Add("misc.castBaronW", new KeyBind("Send W to Baron/Rift Herald", false, KeyBind.BindTypes.HoldActive, "I".ToCharArray()[0]));
+
+                MiscMenu.Add("misc.sep2", new Separator());
+                MiscMenu.Add("misc.harassEnemyE", new CheckBox("Harass enemy with E when minion can die"));
+                MiscMenu.Add("misc.harassEnemyECombo", new CheckBox("Do this also in combo", false));
+
+                MiscMenu.Add("misc.sep3", new Separator());
+                MiscMenu.Add("misc.castDragonW", new KeyBind("Send W to Dragon", false, KeyBind.BindTypes.HoldActive, 'U'));
+                MiscMenu.Add("misc.castBaronW", new KeyBind("Send W to Baron/Rift Herald", false, KeyBind.BindTypes.HoldActive, 'I'));
+
+                MiscMenu.Add("misc.sep4", new Separator());
                 MiscMenu.Add("misc.useR", new CheckBox("Use R to save ally"));
                 MiscMenu.Add("misc.healthR", new Slider("{0}% Health to save ally", 15, 5, 25));
             }

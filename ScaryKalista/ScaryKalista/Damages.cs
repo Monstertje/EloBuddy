@@ -24,6 +24,15 @@ namespace ScaryKalista
             });
         }
 
+        public static float GetQDamage(Obj_AI_Base target)
+        {
+            if (!Spells.Q.IsReady()) return 0f;
+
+            return Player.Instance.CalculateDamageOnUnit(target, DamageType.Physical,
+                    new float[] { 10, 70, 130, 190, 250 }[Spells.Q.Level - 1]
+                    + 1f * Player.Instance.TotalAttackDamage);
+        }
+
         public static float GetRendDamage(Obj_AI_Base target)
         {
             return Player.Instance.CalculateDamageOnUnit(target, DamageType.Physical, GetRawRendDamage(target)) *
