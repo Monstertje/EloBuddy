@@ -1,7 +1,8 @@
-﻿using System.Linq;
+using System.Linq;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using Hellsing.Kalista;
 
 namespace ScaryKalista
 {
@@ -25,6 +26,10 @@ namespace ScaryKalista
             //Initialize the menu
             Menu = MainMenu.AddMenu("Scary Kalista", "ScaryKalista");
             Menu.AddGroupLabel("Welcome to Scary Kalista!");
+
+            //Hellsing init
+            // Misc
+            Misc.Initialize();
 
             //Combo
             ComboMenu = Menu.AddSubMenu("Combo");
@@ -64,7 +69,7 @@ namespace ScaryKalista
                 JungleMenu.Add("jungleclear.useE", new CheckBox("Kill jungle camps with E"));
                 JungleMenu.Add("jungleclear.miniE", new CheckBox("Kill mini jungle monsters with E", false));
             }
-            
+
             //Flee
             FleeMenu = Menu.AddSubMenu("Flee");
             {
@@ -93,6 +98,24 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.sep4", new Separator());
                 MiscMenu.Add("misc.useR", new CheckBox("Use R to save ally"));
                 MiscMenu.Add("misc.healthR", new Slider("{0}% Health to save ally", 15, 5, 25));
+                ////Hellsing Sentinel Usage
+                //MiscMenu.Add("misc.sep5", new Separator());
+                //MiscMenu.Add("misc.labelBETASentinel", new Label("Sentinel: Send your sentinal automatically to places, Thanks Hellsing!"));
+                //MiscMenu.Add("misc.enableAutoSentinel", new CheckBox("Enable AutoSentinel"));
+                //MiscMenu.Add("misc.noModeSentinal", new CheckBox("Only cast when not in a mode"));
+                //MiscMenu.Add("misc.alertIfDamage", new CheckBox("Alert if sentinel takes damage"));
+                ////AutoSentinel Locations
+                //MiscMenu.Add("misc.sep6", new Separator());
+                //MiscMenu.Add("misc.betaSentinel", new Label("Sentinel: Send your sentinal automatically to places, Thanks Hellsing!"));
+                //MiscMenu.Add("misc.sendToBaron", new CheckBox("Send to baron"));
+                //MiscMenu.Add("misc.sendToDragon", new CheckBox("Send to Dragon"));
+                //MiscMenu.Add("misc.sendToMid", new CheckBox("Send to Mid"));
+                //MiscMenu.Add("misc.sendToBlue", new CheckBox("Send to Blue"));
+                //MiscMenu.Add("misc.sendToRed", new CheckBox("Send to Red"));
+                //SentinelManager.RecalculateOpenLocations();
+
+
+
             }
 
             //Items
@@ -105,7 +128,7 @@ namespace ScaryKalista
                 ItemMenu.Add("item.sep", new Separator());
 
                 var bork = Items.BladeOfTheRuinedKing;
-                ItemMenu.Add("item." + bork.ItemInfo.Name, new CheckBox("Use "+ bork.ItemInfo.Name));
+                ItemMenu.Add("item." + bork.ItemInfo.Name, new CheckBox("Use " + bork.ItemInfo.Name));
                 ItemMenu.Add("item." + bork.ItemInfo.Name + "MyHp", new Slider("Your HP lower than {0}%", 80));
                 ItemMenu.Add("item." + bork.ItemInfo.Name + "EnemyHp", new Slider("Enemy HP lower than {0}%", 80));
             }
@@ -142,5 +165,152 @@ namespace ScaryKalista
                 if (blitzcrank) DrawMenu.Add("draw.balista", new CheckBox("Draw Balista range"));
             }
         }
+        //Hellsing
+        public static class Misc
+        {
+            private static Menu Menu { get; set; }
+
+            private static readonly CheckBox _killsteal;
+            private static readonly CheckBox _bigE;
+            private static readonly CheckBox _saveSoulbound;
+            private static readonly CheckBox _secureE;
+            private static readonly CheckBox _harassPlus;
+            private static readonly Slider _autoBelowHealthE;
+            private static readonly Slider _reductionE;
+
+            public static bool UseKillsteal
+            {
+                get { return _killsteal.CurrentValue; }
+            }
+            public static bool UseEBig
+            {
+                get { return _bigE.CurrentValue; }
+            }
+            public static bool SaveSouldBound
+            {
+                get { return _saveSoulbound.CurrentValue; }
+            }
+            public static bool SecureMinionKillsE
+            {
+                get { return _secureE.CurrentValue; }
+            }
+            public static bool UseHarassPlus
+            {
+                get { return _harassPlus.CurrentValue; }
+            }
+            public static int AutoEBelowHealth
+            {
+                get { return _autoBelowHealthE.CurrentValue; }
+            }
+            public static int DamageReductionE
+            {
+                get { return _reductionE.CurrentValue; }
+            }
+
+            static Misc()
+            {
+                Menu = Config.Menu.AddSubMenu("Auto Sentinel");
+
+                Menu.AddGroupLabel("Auto Sentinel");
+                
+                // Initialize other misc features
+                Sentinel.Initialize();
+            }
+
+            public static void Initialize()
+            {
+            }
+
+            public static class Sentinel
+            {
+                private static readonly CheckBox _enabled;
+                private static readonly CheckBox _noMode;
+                private static readonly CheckBox _alert;
+                private static readonly Slider _mana;
+
+                private static readonly CheckBox _baron;
+                private static readonly CheckBox _dragon;
+                private static readonly CheckBox _mid;
+                private static readonly CheckBox _blue;
+                private static readonly CheckBox _red;
+
+                public static bool Enabled
+                {
+                    get { return _enabled.CurrentValue; }
+                }
+                public static bool NoModeOnly
+                {
+                    get { return _noMode.CurrentValue; }
+                }
+                public static bool Alert
+                {
+                    get { return _alert.CurrentValue; }
+                }
+                public static int Mana
+                {
+                    get { return _mana.CurrentValue; }
+                }
+
+                public static bool SendBaron
+                {
+                    get { return _baron.CurrentValue; }
+                }
+                public static bool SendDragon
+                {
+                    get { return _dragon.CurrentValue; }
+                }
+                public static bool SendMid
+                {
+                    get { return _mid.CurrentValue; }
+                }
+                public static bool SendBlue
+                {
+                    get { return _blue.CurrentValue; }
+                }
+                public static bool SendRed
+                {
+                    get { return _red.CurrentValue; }
+                }
+
+                static Sentinel()
+                {
+                    Menu.AddGroupLabel("Sentinel (W) usage. Ported from Hellsings Kalista by TheYasuoMain!");
+
+                  
+                    {
+                        _enabled = Menu.Add("enabled", new CheckBox("Enabled"));
+                        _noMode = Menu.Add("noMode", new CheckBox("Only use when no mode active"));
+                        _alert = Menu.Add("alert", new CheckBox("Alert when sentinel is taking damage"));
+                        _mana = Menu.Add("mana", new Slider("Minimum mana available when casting W ({0}%)", 40));
+
+                        Menu.AddLabel("Send to the following locations (no specific order):");
+                        (_baron = Menu.Add("baron", new CheckBox("Baron"))).OnValueChange += OnValueChange;
+                        (_dragon = Menu.Add("dragon", new CheckBox("Dragon"))).OnValueChange += OnValueChange;
+                        (_mid = Menu.Add("mid", new CheckBox("Mid lane brush"))).OnValueChange += OnValueChange;
+                        (_blue = Menu.Add("blue", new CheckBox("Blue buff"))).OnValueChange += OnValueChange;
+                        (_red = Menu.Add("red", new CheckBox("Red buff"))).OnValueChange += OnValueChange;
+                        SentinelManager.RecalculateOpenLocations();
+                    }
+                }
+
+                private static void OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+                {
+                    SentinelManager.RecalculateOpenLocations();
+                }
+                public static void Initialize()
+                {
+                }
+                //Hellsing
+
+
+            }
+        }
     }
 }
+        
+    
+
+
+    
+
+
