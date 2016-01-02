@@ -9,7 +9,7 @@ using ScaryKalista;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 // ReSharper disable PossibleMultipleEnumeration
-namespace Hellsing.Kalista
+namespace ScaryKalista
 {
     public static class SentinelManager
     {
