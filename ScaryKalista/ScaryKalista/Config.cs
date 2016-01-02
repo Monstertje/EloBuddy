@@ -2,7 +2,7 @@ using System.Linq;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
-using Hellsing.Kalista;
+using ScaryKalista;
 
 namespace ScaryKalista
 {
