@@ -13,6 +13,7 @@ namespace ScaryKalista
         public static Menu LaneMenu { get; private set; }
         public static Menu JungleMenu { get; private set; }
         public static Menu FleeMenu { get; private set; }
+        public static Menu SentinelMenu { get; private set; }
         public static Menu MiscMenu { get; private set; }
         public static Menu DrawMenu { get; private set; }
         public static Menu BalistaMenu { get; private set; }
@@ -72,6 +73,28 @@ namespace ScaryKalista
                 FleeMenu.Add("flee.useJump", new CheckBox("Jump walls with Q on jump spots"));
             }
 
+            //Sentinel
+            SentinelMenu = Menu.AddSubMenu("Sentinel (W)");
+            {
+                SentinelMenu.Add("sentinel.castDragon", new KeyBind("Send sentinel to Dragon", false, KeyBind.BindTypes.HoldActive, 'U'));
+                SentinelMenu.Add("sentinel.castBaron", new KeyBind("Send sentinel to Baron/Rift Herald", false, KeyBind.BindTypes.HoldActive, 'I'));
+
+                SentinelMenu.Add("sentinel.sep1", new Separator());
+                SentinelMenu.Add("sentinel.enable", new CheckBox("Auto send sentinels", false));
+                SentinelMenu.Add("sentinel.noMode", new CheckBox("Only when no modes are active"));
+                SentinelMenu.Add("sentinel.alert", new CheckBox("Alert when sentinel is taking damage"));
+                SentinelMenu.Add("sentinel.mana", new Slider("Minimum {0}% mana to auto send W", 40));
+
+                SentinelMenu.Add("sentinel.sep2", new Separator());
+                SentinelMenu.Add("sentinel.locationLabel", new Label("Send sentinels to:"));
+                (SentinelMenu.Add("sentinel.baron", new CheckBox("Baron / Rift Herald"))).OnValueChange += SentinelLocationsChanged;
+                (SentinelMenu.Add("sentinel.dragon", new CheckBox("Dragon"))).OnValueChange += SentinelLocationsChanged;
+                (SentinelMenu.Add("sentinel.mid", new CheckBox("Mid brush"))).OnValueChange += SentinelLocationsChanged;
+                (SentinelMenu.Add("sentinel.blue", new CheckBox("Blue"))).OnValueChange += SentinelLocationsChanged;
+                (SentinelMenu.Add("sentinel.red", new CheckBox("Red"))).OnValueChange += SentinelLocationsChanged;
+                Sentinel.RecalculateOpenLocations();
+            }
+
             //Misc
             MiscMenu = Menu.AddSubMenu("Misc");
             {
@@ -87,10 +110,6 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.harassEnemyECombo", new CheckBox("Do this also in combo", false));
 
                 MiscMenu.Add("misc.sep3", new Separator());
-                MiscMenu.Add("misc.castDragonW", new KeyBind("Send W to Dragon", false, KeyBind.BindTypes.HoldActive, 'U'));
-                MiscMenu.Add("misc.castBaronW", new KeyBind("Send W to Baron/Rift Herald", false, KeyBind.BindTypes.HoldActive, 'I'));
-
-                MiscMenu.Add("misc.sep4", new Separator());
                 MiscMenu.Add("misc.useR", new CheckBox("Use R to save ally"));
                 MiscMenu.Add("misc.healthR", new Slider("{0}% Health to save ally", 15, 5, 25));
             }
@@ -141,6 +160,11 @@ namespace ScaryKalista
                 DrawMenu.Add("draw.jumpSpots", new CheckBox("Draw jump spots"));
                 if (blitzcrank) DrawMenu.Add("draw.balista", new CheckBox("Draw Balista range"));
             }
+        }
+
+        private static void SentinelLocationsChanged(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+        {
+            Sentinel.RecalculateOpenLocations();
         }
     }
 }

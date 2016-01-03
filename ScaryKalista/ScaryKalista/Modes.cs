@@ -73,10 +73,15 @@ namespace ScaryKalista
             var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(
                 EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range).ToArray();
 
+            if (!minions.Any()) return;
+
             if (Config.LaneMenu.IsChecked("laneclear.useQ"))
             {
+                var qKillableMinions = minions.Where(x => x.GetTotalHealth() < Damages.GetQDamage(x)).ToArray();
+                if (!qKillableMinions.Any()) return;
+
                 var predictionResult =
-                    (from minion in minions
+                    (from minion in qKillableMinions
                      let pred = Spells.Q.GetPrediction(minion)
                      let count = pred.GetCollisionObjects<Obj_AI_Minion>().Count(x =>
                                     x.GetTotalHealth() < Damages.GetQDamage(x) 
@@ -223,7 +228,7 @@ namespace ScaryKalista
                 }
             }
 
-            if (Config.MiscMenu.IsActive("misc.castDragonW") && Spells.W.IsReady())
+            if (Config.SentinelMenu.IsActive("sentinel.castDragon") && Spells.W.IsReady())
             {
                 if (Player.Instance.Distance(_dragon) <= Spells.W.Range)
                 {
@@ -231,7 +236,7 @@ namespace ScaryKalista
                 }
             }
 
-            if (Config.MiscMenu.IsActive("misc.castBaronW") && Spells.W.IsReady())
+            if (Config.SentinelMenu.IsActive("sentinel.castBaron") && Spells.W.IsReady())
             {
                 if (Player.Instance.Distance(_baron) <= Spells.W.Range)
                 {
