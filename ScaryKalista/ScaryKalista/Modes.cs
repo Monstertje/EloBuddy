@@ -176,12 +176,13 @@ namespace ScaryKalista
                     Spells.R.Cast();
                 }
             }
-             //Auto E before death
-            if (Config.MiscMenu.IsChecked("misc.beforeDeath") )
+
+            if (Config.MiscMenu.IsChecked("misc.autoE") && Spells.E.IsReady())
             {
-                if (Player.Instance.HealthPercent < Config.MiscMenu.GetValue("misc.beforedeathE") && EntityManager.Heroes.Enemies.Any(o => o.IsValidTarget() && o.HasRendBuff() && Spells.E.IsInRange(o)) && Spells.E.Cast())
+                if (Player.Instance.HealthPercent < Config.MiscMenu.GetValue("misc.autoEHealth") 
+                    && EntityManager.Heroes.Enemies.Any(x => x.IsValidTarget(Spells.E.Range) && x.HasRendBuff()))
                 {
-                    return;
+                    Spells.E.Cast();
                 }
             }
         }
