@@ -176,6 +176,14 @@ namespace ScaryKalista
                     Spells.R.Cast();
                 }
             }
+             //Auto E before death
+            if (Config.MiscMenu.IsChecked("misc.beforeDeath") )
+            {
+                if (Player.Instance.HealthPercent < Config.MiscMenu.GetValue("misc.beforedeathE") && EntityManager.Heroes.Enemies.Any(o => o.IsValidTarget() && o.HasRendBuff() && Spells.E.IsInRange(o)) && Spells.E.Cast())
+                {
+                    return;
+                }
+            }
         }
 
         public static void OnUnkillableMinion(Obj_AI_Base unit, Orbwalker.UnkillableMinionArgs args)
