@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
@@ -101,15 +101,19 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.labelSteal", new Label("Stealing: you don't have to hold any button"));
                 MiscMenu.Add("misc.killstealE", new CheckBox("Killsteal with E"));
                 MiscMenu.Add("misc.junglestealE", new CheckBox("Junglesteal with E"));
-
+                 
                 MiscMenu.Add("misc.sep1", new Separator());
-                MiscMenu.Add("misc.unkillableE", new CheckBox("Kill unkillable minions with E"));
+                MiscMenu.Add("misc.beforeDeath", new CheckBox("Auto Rend (e) when your about to die."));
+                MiscMenu.Add("misc.beforeDeathE", new Slider("Minimum health {0}% to auto rend", 15));
 
                 MiscMenu.Add("misc.sep2", new Separator());
+                MiscMenu.Add("misc.unkillableE", new CheckBox("Kill unkillable minions with E"));
+
+                MiscMenu.Add("misc.sep3", new Separator());
                 MiscMenu.Add("misc.harassEnemyE", new CheckBox("Harass enemy with E when minion can die"));
                 MiscMenu.Add("misc.harassEnemyECombo", new CheckBox("Do this also in combo", false));
 
-                MiscMenu.Add("misc.sep3", new Separator());
+                MiscMenu.Add("misc.sep4", new Separator());
                 MiscMenu.Add("misc.useR", new CheckBox("Use R to save ally"));
                 MiscMenu.Add("misc.healthR", new Slider("{0}% Health to save ally", 15, 5, 25));
             }
