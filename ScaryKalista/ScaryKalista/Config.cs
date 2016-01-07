@@ -36,27 +36,35 @@ namespace ScaryKalista
                 ComboMenu.Add("combo.sep1", new Separator());
                 ComboMenu.Add("combo.useE", new CheckBox("Kill with E"));
                 ComboMenu.Add("combo.gapClose", new CheckBox("Use minions/jungle to gap close"));
+
+                ComboMenu.Add("combo.sep2", new Separator());
+                ComboMenu.Add("combo.harassEnemyE", new CheckBox("Harass enemy with E when minion can die", false));
             }
 
             //Harass
             HarassMenu = Menu.AddSubMenu("Harass");
             {
                 HarassMenu.Add("harass.useQ", new CheckBox("Use Q"));
-                HarassMenu.Add("harass.minManaQ", new Slider("Mininum {0}% mana for Q", 60));
+                HarassMenu.Add("harass.minManaQ", new Slider("Mininum {0}% mana to use Q", 60));
+
+                HarassMenu.Add("harass.sep1", new Separator());
+                HarassMenu.Add("harass.harassEnemyE", new CheckBox("Harass enemy with E when minion can die"));
             }
 
             //LaneClear
             LaneMenu = Menu.AddSubMenu("LaneClear");
             {
                 LaneMenu.Add("laneclear.useQ", new CheckBox("Use Q"));
-                LaneMenu.Add("laneclear.minQ", new Slider("Mininum {0} minions for Q", 3, 2, 10));
+                LaneMenu.Add("laneclear.minQ", new Slider("Mininum {0} minions to use Q", 3, 2, 10));
+                LaneMenu.Add("laneclear.minManaQ", new Slider("Mininum {0}% mana to use Q", 30));
 
                 LaneMenu.Add("laneclear.sep1", new Separator());
-                LaneMenu.Add("laneclear.useE", new CheckBox("Kill with E"));
-                LaneMenu.Add("laneclear.minE", new Slider("Mininum {0} minions for E", 3, 2, 10));
+                LaneMenu.Add("laneclear.useE", new CheckBox("Use E"));
+                LaneMenu.Add("laneclear.minE", new Slider("Mininum {0} minions to use E", 3, 2, 10));
+                LaneMenu.Add("laneclear.minManaE", new Slider("Mininum {0}% mana to use E", 30));
 
                 LaneMenu.Add("laneclear.sep2", new Separator());
-                LaneMenu.Add("laneclear.minMana", new Slider("Mininum {0}% mana to LaneClear", 30));
+                LaneMenu.Add("laneclear.harassEnemyE", new CheckBox("Harass enemy with E when minion can die"));
             }
 
             //JungleClear

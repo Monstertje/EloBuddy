@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
@@ -8,33 +9,24 @@ namespace ScaryKalista
 {
     class Modes
     {
-        private static Vector2 _baron = new Vector2(5007.124f, 10471.45f);
-        private static Vector2 _dragon = new Vector2(9866.148f, 4414.014f);
-
         public static void Combo()
         {
-            var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical);
-
-            if (target == null || !target.IsValidTarget()) return;
-
             if (Config.ComboMenu.IsChecked("combo.useQ")
                 && Spells.Q.IsReady()
-                && !Player.Instance.IsDashing())
+                && !Player.Instance.IsDashing()
+                && Player.Instance.ManaPercent > Config.ComboMenu.GetValue("combo.minManaQ"))
             {
-                if (!(Player.Instance.ManaPercent < Config.ComboMenu.GetValue("combo.minManaQ")))
+                var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical);
+                if (target != null && target.IsValidTarget())
                 {
                     Spells.Q.Cast(target);
                 }
             }
 
             if (Config.ComboMenu.IsChecked("combo.useE") 
-                && !Config.MiscMenu.IsChecked("misc.killstealE")
-                && Spells.E.IsReady())
+                && !Config.MiscMenu.IsChecked("misc.killstealE"))
             {
-                if (EntityManager.Heroes.Enemies.Any(x => x.IsRendKillable()))
-                {
-                    Spells.E.Cast();
-                }
+                EnemyKill();
             }
 
             if (Config.ComboMenu.IsChecked("combo.gapClose"))
@@ -45,37 +37,44 @@ namespace ScaryKalista
 
                 Orbwalker.ForcedTarget = EntityManager.Heroes.Enemies.Any(x => Player.Instance.IsInAutoAttackRange(x)) ? null : gapCloseTarget;
             }
+
+            if (Config.ComboMenu.IsChecked("combo.harassEnemyE"))
+            {
+                MinionHarass();
+            }
         }
 
         public static void Harass()
         {
-            var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical);
-
-            if (target == null || !target.IsValidTarget()) return;
-
-            if (Config.HarassMenu.IsChecked("harass.useQ") 
+            if (Config.HarassMenu.IsChecked("harass.useQ")
                 && Spells.Q.IsReady() 
                 && !Player.Instance.IsDashing()
-                && !(Player.Instance.ManaPercent < Config.HarassMenu.GetValue("harass.minManaQ")))
+                && Player.Instance.ManaPercent > Config.HarassMenu.GetValue("harass.minManaQ"))
             {
-                Spells.Q.Cast(target);
+                var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical);
+                if (target != null && target.IsValidTarget())
+                {
+                    Spells.Q.Cast(target);
+                }
+            }
+
+            if (Config.HarassMenu.IsChecked("harass.harassEnemyE"))
+            {
+                MinionHarass();
             }
         }
 
         public static void LaneClear()
         {
-            if (Player.HasBuff("summonerexhaust")
-                || Player.Instance.ManaPercent < Config.LaneMenu.GetValue("laneclear.minMana"))
-            {
-                return;
-            }
+            if (Player.HasBuff("summonerexhaust")) return;
 
             var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(
                 EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range).ToArray();
 
             if (!minions.Any()) return;
 
-            if (Config.LaneMenu.IsChecked("laneclear.useQ"))
+            if (Config.LaneMenu.IsChecked("laneclear.useQ")
+                && Player.Instance.ManaPercent > Config.LaneMenu.GetValue("laneclear.minManaQ"))
             {
                 var qKillableMinions = minions.Where(x => x.GetTotalHealth() < Damages.GetQDamage(x)).ToArray();
                 if (!qKillableMinions.Any()) return;
@@ -96,7 +95,9 @@ namespace ScaryKalista
                 }
             }
 
-            if (Config.LaneMenu.IsChecked("laneclear.useE") && Spells.E.IsReady())
+            if (Config.LaneMenu.IsChecked("laneclear.useE")
+                && Player.Instance.ManaPercent > Config.LaneMenu.GetValue("laneclear.minManaE") 
+                && Spells.E.IsReady())
             {
                 var count = minions.Count(x => x.IsRendKillable() && x.Health > 10);
                 if (count >= Config.LaneMenu.GetValue("laneclear.minE"))
@@ -104,28 +105,19 @@ namespace ScaryKalista
                     Spells.E.Cast();
                 }
             }
+
+            if (Config.LaneMenu.IsChecked("laneclear.harassEnemyE"))
+            {
+                MinionHarass();
+            }
         }
 
         public static void JungleClear()
         {
             if (Config.JungleMenu.IsChecked("jungleclear.useE")
-                && !Config.MiscMenu.IsChecked("misc.junglestealE")
-                && Spells.E.IsReady())
+                && !Config.MiscMenu.IsChecked("misc.junglestealE"))
             {
-                var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells.E.Range).ToArray();
-
-                if (!Config.JungleMenu.IsChecked("jungleclear.miniE"))
-                {
-                    if (minions.Any(x => x.IsRendKillable() && !x.Name.Contains("Mini")))
-                    {
-                        Spells.E.Cast();
-                    }
-                }
-
-                else if (minions.Any(x => x.IsRendKillable()))
-                {
-                    Spells.E.Cast();
-                }
+                JungleKill();
             }
         }
 
@@ -134,7 +126,7 @@ namespace ScaryKalista
             if (Config.FleeMenu.IsChecked("flee.useJump") && Game.MapId == GameMapId.SummonersRift)
             {
                 var spot = WallJump.GetJumpSpot();
-                if (Spells.Q.IsReady() && spot != null)
+                if (spot != null && Spells.Q.IsReady())
                 {
                     Orbwalker.DisableAttacking = true;
                     Orbwalker.DisableMovement = true;
@@ -163,57 +155,14 @@ namespace ScaryKalista
 
         public static void PermaActive()
         {
-            if (Config.MiscMenu.IsChecked("misc.killstealE") && Spells.E.IsReady())
+            if (Config.MiscMenu.IsChecked("misc.killstealE"))
             {
-                if (EntityManager.Heroes.Enemies.Any(x => x.IsRendKillable()))
-                {
-                    Spells.E.Cast();
-                }
+                EnemyKill();
             }
 
-            if (Config.MiscMenu.IsChecked("misc.junglestealE") && Spells.E.IsReady())
+            if (Config.MiscMenu.IsChecked("misc.junglestealE"))
             {
-                var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells.E.Range).ToArray();
-
-                if (!Config.JungleMenu.IsChecked("jungleclear.miniE"))
-                {
-                    if (minions.Any(x => x.IsRendKillable() && !x.Name.Contains("Mini")))
-                    {
-                        Spells.E.Cast();
-                    }
-                }
-
-                else if (minions.Any(x => x.IsRendKillable()))
-                {
-                    Spells.E.Cast();
-                }
-            }
-
-            if (Config.MiscMenu.IsChecked("misc.harassEnemyE") && Spells.E.IsReady())
-            {
-                if (Player.HasBuff("summonerexhaust") || (Player.Instance.Mana - 40) < 40) return;
-
-                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass) 
-                    || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)
-                    || (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && Config.MiscMenu.IsChecked("misc.harassEnemyECombo")))
-                {
-                    var minion =
-                        EntityManager.MinionsAndMonsters.GetLaneMinions(
-                            EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.E.Range)
-                            .Any(x => x.IsRendKillable() && x.Health > 10);
-
-                    var hero =
-                        EntityManager.Heroes.Enemies
-                        .Any(x =>
-                                x.HasRendBuff()
-                                && !x.HasSpellShield()
-                                && !x.HasUndyingBuff());
-
-                    if (minion && hero)
-                    {
-                        Spells.E.Cast();
-                    }
-                }
+                JungleKill();
             }
 
             if (Config.MiscMenu.IsChecked("misc.useR") && Spells.R.IsReady())
@@ -227,29 +176,13 @@ namespace ScaryKalista
                     Spells.R.Cast();
                 }
             }
-
-            if (Config.SentinelMenu.IsActive("sentinel.castDragon") && Spells.W.IsReady())
-            {
-                if (Player.Instance.Distance(_dragon) <= Spells.W.Range)
-                {
-                    Spells.W.Cast(_dragon.To3DWorld());
-                }
-            }
-
-            if (Config.SentinelMenu.IsActive("sentinel.castBaron") && Spells.W.IsReady())
-            {
-                if (Player.Instance.Distance(_baron) <= Spells.W.Range)
-                {
-                    Spells.W.Cast(_baron.To3DWorld());
-                }
-            }
         }
 
         public static void OnUnkillableMinion(Obj_AI_Base unit, Orbwalker.UnkillableMinionArgs args)
         {
-            if (Player.HasBuff("summonerexhaust") 
-                || (Player.Instance.Mana - 40) < 40 
-                || !Spells.E.IsReady())
+            if (!Spells.E.IsReady() 
+                || Player.HasBuff("summonerexhaust") 
+                || (Player.Instance.Mana - 40) < 40)
             {
                 return;
             }
@@ -261,6 +194,72 @@ namespace ScaryKalista
                 {
                     Spells.E.Cast();
                 }
+            }
+        }
+
+        public static void CastW(Vector2 location)
+        {
+            if (!Spells.W.IsReady()) return;
+
+            if (Player.Instance.Distance(location) <= Spells.W.Range)
+            {
+                Spells.W.Cast(location.To3DWorld());
+            }
+        }
+
+        private static void MinionHarass()
+        {
+            if (!Spells.E.IsReady()
+                || Player.HasBuff("summonerexhaust")
+                || (Player.Instance.Mana - 40) < 40)
+            {
+                return;
+            }
+
+            var minion = EntityManager.MinionsAndMonsters.GetLaneMinions(
+                            EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.E.Range)
+                            .Any(x => x.IsRendKillable() && x.Health > 10);
+
+            if (!minion) return;
+
+            var hero = EntityManager.Heroes.Enemies.Any(
+                x =>
+                    x.HasRendBuff()
+                    && x.IsValidTarget(Spells.E.Range)
+                    && !x.HasSpellShield()
+                    && !x.HasUndyingBuff());
+
+            if (hero) Spells.E.Cast();
+        }
+
+        private static void JungleKill()
+        {
+            if (!Spells.E.IsReady()) return;
+
+            var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells.E.Range).ToArray();
+            if (!minions.Any()) return;
+
+            if (!Config.JungleMenu.IsChecked("jungleclear.miniE"))
+            {
+                if (minions.Any(x => x.IsRendKillable() && !x.Name.Contains("Mini")))
+                {
+                    Spells.E.Cast();
+                }
+            }
+
+            else if (minions.Any(x => x.IsRendKillable()))
+            {
+                Spells.E.Cast();
+            }
+        }
+
+        private static void EnemyKill()
+        {
+            if (!Spells.E.IsReady()) return;
+
+            if (EntityManager.Heroes.Enemies.Any(x => x.IsRendKillable()))
+            {
+                Spells.E.Cast();
             }
         }
     }

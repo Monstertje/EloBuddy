@@ -19,6 +19,9 @@ namespace ScaryKalista
         }
         private static bool _fleeActivated;
 
+        private static readonly Vector2 Baron = new Vector2(5007.124f, 10471.45f);
+        private static readonly Vector2 Dragon = new Vector2(9866.148f, 4414.014f);
+
         public static void OnLoadingComplete(EventArgs args)
         {
             if (Player.Instance.ChampionName != "Kalista") return;
@@ -97,6 +100,15 @@ namespace ScaryKalista
                 Orbwalker.DisableMovement = false;
                 Orbwalker.ForcedTarget = null;
             }
+
+            if (Config.SentinelMenu.IsActive("sentinel.castBaron"))
+            {
+                Modes.CastW(Baron);
+            }
+            if (Config.SentinelMenu.IsActive("sentinel.castDragon"))
+            {
+                Modes.CastW(Dragon);
+            }
         }
         private static void OnDraw(EventArgs args)
         {
@@ -142,7 +154,7 @@ namespace ScaryKalista
 
                     if (percent >= 100 && !enemy.IsRendKillable())
                     {
-                        Drawing.DrawText(enemy.HPBarPosition.X + 140, enemy.HPBarPosition.Y + 5, System.Drawing.Color.Red, "Spellshield/undying buff!", 20);
+                        Drawing.DrawText(enemy.HPBarPosition.X + 140, enemy.HPBarPosition.Y + 5, System.Drawing.Color.Red, "Can't kill!", 20);
                     }
                     else
                     {
