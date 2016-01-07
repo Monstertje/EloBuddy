@@ -114,10 +114,6 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.unkillableE", new CheckBox("Kill unkillable minions with E"));
 
                 MiscMenu.Add("misc.sep2", new Separator());
-                MiscMenu.Add("misc.harassEnemyE", new CheckBox("Harass enemy with E when minion can die"));
-                MiscMenu.Add("misc.harassEnemyECombo", new CheckBox("Do this also in combo", false));
-
-                MiscMenu.Add("misc.sep3", new Separator());
                 MiscMenu.Add("misc.useR", new CheckBox("Use R to save ally"));
                 MiscMenu.Add("misc.healthR", new Slider("{0}% Health to save ally", 15, 5, 25));
             }
