@@ -109,10 +109,10 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.labelSteal", new Label("Stealing: you don't have to hold any button"));
                 MiscMenu.Add("misc.killstealE", new CheckBox("Killsteal with E"));
                 MiscMenu.Add("misc.junglestealE", new CheckBox("Junglesteal with E"));
-                //Auto rend before death -- config
+
                 MiscMenu.Add("misc.sep1", new Separator());
-                MiscMenu.Add("misc.beforeDeath", new CheckBox("Auto E when your about to die."));
-                MiscMenu.Add("misc.beforeDeathE", new Slider("Minimum health {0}% to auto rend", 15));
+                MiscMenu.Add("misc.autoE", new CheckBox("Auto use E"));
+                MiscMenu.Add("misc.autoEHealth", new Slider("Health below {0}% to auto use E", 10, 5, 25));
 
                 MiscMenu.Add("misc.sep2", new Separator());
                 MiscMenu.Add("misc.unkillableE", new CheckBox("Kill unkillable minions with E"));
