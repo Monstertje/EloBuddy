@@ -1,4 +1,4 @@
-﻿using EloBuddy;
+using EloBuddy;
 using EloBuddy.SDK;
 
 namespace ScaryKalista
@@ -52,7 +52,7 @@ namespace ScaryKalista
                     _height = 9;
                     _width = 104;
                     _xOffset = 2;
-                    _yOffset = -6;
+                    _yOffset = 9;
 
                     DrawLine(hero);
                 }
@@ -72,49 +72,49 @@ namespace ScaryKalista
                         _height = 9;
                         _width = 142;
                         _xOffset = -4;
-                        _yOffset = -8;
+                        _yOffset = 7;
                     }
                     else if (unit.Name.Contains("Dragon"))
                     {
                         _height = 10;
                         _width = 143;
                         _xOffset = -4;
-                        _yOffset = -6;
+                        _yOffset = 8;
                     }
                     else if (unit.Name.Contains("Baron"))
                     {
                         _height = 12;
                         _width = 191;
                         _xOffset = -29;
-                        _yOffset = -7;
+                        _yOffset = 6;
                     }
                     else if (unit.Name.Contains("Herald"))
                     {
                         _height = 10;
                         _width = 142;
                         _xOffset = -4;
-                        _yOffset = -8;
+                        _yOffset = 7;
                     }
                     else if ((unit.Name.Contains("Razorbeak") || unit.Name.Contains("Murkwolf")) && !unit.Name.Contains("Mini"))
                     {
                         _width = 74;
                         _height = 3;
                         _xOffset = 30;
-                        _yOffset = -8;
+                        _yOffset = 7;
                     }
                     else if (unit.Name.Contains("Krug") && !unit.Name.Contains("Mini"))
                     {
                         _width = 80;
                         _height = 3;
                         _xOffset = 27;
-                        _yOffset = -8;
+                        _yOffset = 7;
                     }
                     else if (unit.Name.Contains("Gromp"))
                     {
                         _width = 86;
                         _height = 3;
                         _xOffset = 24;
-                        _yOffset = -7;
+                        _yOffset = 6;
                     }
                     else if (unit.Name.Contains("Crab"))
                     {
