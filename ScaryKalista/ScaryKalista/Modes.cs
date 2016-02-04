@@ -185,6 +185,29 @@ namespace ScaryKalista
                     Spells.E.Cast();
                 }
             }
+       
+            if (Config.MiscMenu.IsChecked("misc.autoEBig") && Spells.E.IsReady())
+            {
+                    if (EntityManager.MinionsAndMonsters.CombinedAttackable.Any(m =>
+              {
+                   if (!m.IsAlly && Spells.E.IsInRange(m) && m.HasRendBuff())
+                    {
+                       var skinName = m.BaseSkinName.ToLower();
+                        return (skinName.Contains("siege") ||
+                                skinName.Contains("super") ||
+                                skinName.Contains("dragon") ||
+                                skinName.Contains("baron") ||
+                                skinName.Contains("spiderboss")) &&
+                            m.IsRendKillable();
+                    }
+                    return false;
+              }) && Spells.E.Cast())
+                    {
+
+                        return;
+                    }
+            }
+
         }
 
         public static void OnUnkillableMinion(Obj_AI_Base unit, Orbwalker.UnkillableMinionArgs args)

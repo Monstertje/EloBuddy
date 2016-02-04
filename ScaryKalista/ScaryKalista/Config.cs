@@ -115,6 +115,7 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.autoEHealth", new Slider("Health below {0}% to auto use E", 10, 5, 25));
 
                 MiscMenu.Add("misc.sep2", new Separator());
+                MiscMenu.Add("misc.autoEBig", new CheckBox("Always rend big minions", false));
                 MiscMenu.Add("misc.unkillableE", new CheckBox("Kill unkillable minions with E"));
 
                 MiscMenu.Add("misc.sep3", new Separator());
