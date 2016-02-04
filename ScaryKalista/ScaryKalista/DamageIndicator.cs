@@ -51,7 +51,7 @@ namespace ScaryKalista
                 {
                     _height = 9;
                     _width = 104;
-                    _xOffset = 2;
+                    _xOffset = hero.ChampionName == "Jhin" ? -9 : 2;
                     _yOffset = hero.ChampionName == "Jhin" ? -5 : 9;
 
                     DrawLine(hero);
