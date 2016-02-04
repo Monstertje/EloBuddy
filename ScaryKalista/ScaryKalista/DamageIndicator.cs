@@ -47,7 +47,10 @@ namespace ScaryKalista
                 foreach (var hero in EntityManager.Heroes.Enemies
                     .Where(x => x.IsValidTarget()
                             && x.IsHPBarRendered
-                            && x.HasRendBuff()))
+                            && x.HasRendBuff()
+                            && x.ChampionName != "Jhin"
+                            ))
+                            
                 {
                     _height = 9;
                     _width = 104;
@@ -58,6 +61,25 @@ namespace ScaryKalista
                 }
             }
 
+            if (Config.DrawMenu.IsChecked("draw.enemyE"))
+            {
+                foreach (var hero in EntityManager.Heroes.Enemies
+                    .Where(x => x.IsValidTarget()
+                            && x.IsHPBarRendered
+                            && x.HasRendBuff()
+                            && x.ChampionName == "Jhin"
+                            ))
+
+                {
+                    _height = 9;
+                    _width = 104;
+                    _xOffset = -9;
+					_yOffset = -5;
+
+                    DrawLine(hero);
+                }
+            }
+        
             if (Config.DrawMenu.IsChecked("draw.jungleE"))
             {
                 foreach (
