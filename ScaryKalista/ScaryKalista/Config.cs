@@ -142,9 +142,13 @@ namespace ScaryKalista
             {
                 BalistaMenu = Menu.AddSubMenu("Balista");
                 {
+                    BalistaMenu.Add("balista.use", new CheckBox("Use Balista"));
+
+                    BalistaMenu.Add("balista.sep1", new Separator());
                     BalistaMenu.Add("balista.comboOnly", new CheckBox("Only use Balista in combo mode"));
                     BalistaMenu.Add("balista.distance", new Slider("Minimum distance between you and Blitzcrank: {0}", 400, 0, 1200));
-                    BalistaMenu.Add("balista.sep", new Separator());
+
+                    BalistaMenu.Add("balista.sep2", new Separator());
                     BalistaMenu.Add("balista.label", new Label("Use Balista for:"));
                     foreach (var enemy in EntityManager.Heroes.Enemies)
                     {
