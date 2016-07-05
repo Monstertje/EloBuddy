@@ -115,9 +115,12 @@ namespace ScaryKalista
                 MiscMenu.Add("misc.autoEHealth", new Slider("Health below {0}% to auto use E", 10, 5, 25));
 
                 MiscMenu.Add("misc.sep2", new Separator());
-                MiscMenu.Add("misc.unkillableE", new CheckBox("Kill unkillable minions with E"));
+                MiscMenu.Add("misc.dmgReductionE", new Slider("Reduce E damage by {0}%", 10, 0, 25));
 
                 MiscMenu.Add("misc.sep3", new Separator());
+                MiscMenu.Add("misc.unkillableE", new CheckBox("Kill unkillable minions with E"));
+
+                MiscMenu.Add("misc.sep4", new Separator());
                 MiscMenu.Add("misc.useR", new CheckBox("Use R to save ally"));
                 MiscMenu.Add("misc.healthR", new Slider("{0}% Health to save ally", 15, 5, 25));
             }
