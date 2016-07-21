@@ -163,8 +163,12 @@ namespace ScaryKalista
             var endPoint = barPos.X + _xOffset + (currentHealthPercentage * _width);
             var yPos = barPos.Y + _yOffset;
 
+            //Create a new transparent color based on the type of unit
+            var color = unit is AIHeroClient ? EnemyColor : JungleColor;
+            var transparentColor = Color.FromArgb(175, color);
+
             //Draw the line
-            Drawing.DrawLine(startPoint, yPos, endPoint, yPos, _height, unit is AIHeroClient ? EnemyColor : JungleColor);
+            Drawing.DrawLine(startPoint, yPos, endPoint, yPos, _height, transparentColor);
         }
     }
 }
