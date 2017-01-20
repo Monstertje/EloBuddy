@@ -143,27 +143,6 @@ namespace ScaryKalista
                 }
             }
 
-            if (Config.DrawMenu.IsChecked("draw.percentage"))
-            {
-
-                foreach (var enemy in
-                    EntityManager.Heroes.Enemies
-                    .Where(x => Player.Instance.Distance(x) <= 2000f && !x.IsDead && x.IsVisible && x.HasRendBuff()))
-                {
-                    var percent = Math.Floor((Damages.GetActualDamage(enemy) / enemy.GetTotalHealth()) * 100);
-
-                    if (percent >= 100 && !enemy.IsRendKillable())
-                    {
-                        Drawing.DrawText(enemy.HPBarPosition.X + 140, enemy.HPBarPosition.Y + 5, System.Drawing.Color.Red, "Can't kill!", 20);
-                    }
-                    else
-                    {
-                        Drawing.DrawText(enemy.HPBarPosition.X + 140, enemy.HPBarPosition.Y + 5, System.Drawing.Color.White, 
-                        enemy.IsRendKillable() ? "Killable!" : percent + "%", 20);
-                    }
-                }
-            }
-
             if (Config.DrawMenu.IsChecked("draw.stacks"))
             {
                 foreach (var enemy in

@@ -130,7 +130,7 @@ namespace ScaryKalista
 
         public static float GetTotalHealth(this Obj_AI_Base target)
         {
-            return target.Health + target.AllShield + target.AttackShield + target.MagicShield + (target.HPRegenRate * 2);
+            return target.TotalShieldHealth() + (target.HPRegenRate * 2);
         }
 
         public static bool IsChecked(this Menu menu, string id)

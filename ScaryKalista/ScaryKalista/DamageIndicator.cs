@@ -46,15 +46,22 @@ namespace ScaryKalista
             {
                 foreach (var hero in EntityManager.Heroes.Enemies
                     .Where(x => x.IsValidTarget()
-                            && x.IsHPBarRendered
-                            && x.HasRendBuff()))
+                                && x.IsHPBarRendered
+                                && x.HasRendBuff()))
                 {
                     _height = 9;
                     _width = 104;
-                    _xOffset = hero.ChampionName == "Jhin" ? -9 : 2;
-                    _yOffset = hero.ChampionName == "Jhin" ? -5 : 9;
+                    _xOffset = 2;
+                    _yOffset = 9;
+
+                    if (hero.ChampionName == "Jhin" || hero.ChampionName == "Annie")
+                    {
+                        _xOffset = -10;
+                        _yOffset = -3;
+                    }
 
                     DrawLine(hero);
+                    DrawText(hero);
                 }
             }
         
@@ -67,7 +74,7 @@ namespace ScaryKalista
                                     && x.IsHPBarRendered
                                     && x.HasRendBuff()))
                 {
-                    if ((unit.Name.Contains("Blue") || unit.Name.Contains("Red")) && !unit.Name.Contains("Mini"))
+                    if (unit.Name.Contains("Blue") || unit.Name.Contains("Red"))
                     {
                         _height = 9;
                         _width = 142;
@@ -86,7 +93,7 @@ namespace ScaryKalista
                         _height = 12;
                         _width = 191;
                         _xOffset = -29;
-                        _yOffset = 6;
+                        _yOffset = -320;
                     }
                     else if (unit.Name.Contains("Herald"))
                     {
@@ -95,26 +102,16 @@ namespace ScaryKalista
                         _xOffset = -4;
                         _yOffset = 7;
                     }
-                    else if ((unit.Name.Contains("Razorbeak") || unit.Name.Contains("Murkwolf")) && !unit.Name.Contains("Mini"))
+                    else if ((unit.Name.Contains("Razorbeak") 
+                        || unit.Name.Contains("Gromp") 
+                        || unit.Name.Contains("Murkwolf") 
+                        || unit.Name.Contains("Krug")) 
+                        && !unit.Name.Contains("Mini"))
                     {
-                        _width = 74;
+                        _width = 91;
                         _height = 3;
-                        _xOffset = 30;
+                        _xOffset = 21;
                         _yOffset = 7;
-                    }
-                    else if (unit.Name.Contains("Krug") && !unit.Name.Contains("Mini"))
-                    {
-                        _width = 80;
-                        _height = 3;
-                        _xOffset = 27;
-                        _yOffset = 7;
-                    }
-                    else if (unit.Name.Contains("Gromp"))
-                    {
-                        _width = 86;
-                        _height = 3;
-                        _xOffset = 24;
-                        _yOffset = 6;
                     }
                     else if (unit.Name.Contains("Crab"))
                     {
@@ -123,19 +120,26 @@ namespace ScaryKalista
                         _xOffset = 36;
                         _yOffset = 21;
                     }
-                    else if (unit.Name.Contains("RedMini") || unit.Name.Contains("BlueMini") || unit.Name.Contains("RazorbeakMini"))
+                    else if (unit.Name.Contains("RazorbeakMini"))
                     {
-                        _height = 2;
-                        _width = 49;
-                        _xOffset = 42;
+                        _height = 3;
+                        _width = 60;
+                        _xOffset = 36;
                         _yOffset = 6;
                     }
-                    else if (unit.Name.Contains("KrugMini") || unit.Name.Contains("MurkwolfMini"))
+                    else if (unit.Name.Contains("MurkwolfMini"))
                     {
-                        _height = 2;
-                        _width = 55;
-                        _xOffset = 39;
-                        _yOffset = 6;
+                        _height = 3;
+                        _width = 59;
+                        _xOffset = 37;
+                        _yOffset = 5;
+                    }
+                    else if (unit.Name.Contains("KrugMini"))
+                    {
+                        _height = 3;
+                        _width = 59;
+                        _xOffset = 37;
+                        _yOffset = 62;
                     }
                     else
                     {
@@ -143,6 +147,7 @@ namespace ScaryKalista
                     }
 
                     DrawLine(unit);
+                    DrawText(unit);
                 }
             }
         }
@@ -155,8 +160,8 @@ namespace ScaryKalista
             var barPos = unit.HPBarPosition;
 
             //Get remaining HP after damage applied in percent and the current percent of health
-            var percentHealthAfterDamage = Math.Max(0, unit.GetTotalHealth() - damage) / (unit.MaxHealth + unit.AllShield + unit.AttackShield + unit.MagicShield);
-            var currentHealthPercentage = unit.GetTotalHealth() / (unit.MaxHealth + unit.AllShield + unit.AttackShield + unit.MagicShield);
+            var percentHealthAfterDamage = Math.Max(0, unit.TotalShieldHealth() - damage) / unit.MaxHealth;
+            var currentHealthPercentage = unit.TotalShieldHealth() / unit.MaxHealth;
 
             //Calculate start and end point of the bar indicator
             var startPoint = barPos.X + _xOffset + (percentHealthAfterDamage * _width);
@@ -169,6 +174,42 @@ namespace ScaryKalista
 
             //Draw the line
             Drawing.DrawLine(startPoint, yPos, endPoint, yPos, _height, transparentColor);
+
+            //Debug
+            //Drawing.DrawLine(barPos.X + _xOffset, yPos, barPos.X + _xOffset + _width, yPos, _height, transparentColor);
+        }
+
+        private static void DrawText(Obj_AI_Base unit)
+        {
+            var damage = _damageToUnit(unit);
+            if (damage <= 0) return;
+
+            //Draw damage percentage
+            if (Config.DrawMenu.IsChecked("draw.percentage")
+                && (unit is AIHeroClient 
+                || (unit.Name.Contains("Baron") || unit.Name.Contains("Dragon") || unit.Name.Contains("Herald") || unit.Name.Contains("Blue") || unit.Name.Contains("Red"))))
+            {
+                var textOffsetX = 40;
+                var textOffsetY = 4;
+
+                if (!(unit is AIHeroClient))
+                {
+                    textOffsetX = 20;
+                    textOffsetY = 8;
+                }
+
+                var percent = Math.Floor((damage / unit.GetTotalHealth()) * 100);
+                if (percent >= 100 && !unit.IsRendKillable())
+                {
+                    Drawing.DrawText(unit.HPBarPosition.X + _xOffset + _width + textOffsetX, unit.HPBarPosition.Y + _yOffset - textOffsetY,
+                        Color.Red, "Can't kill!", 20);
+                }
+                else
+                {
+                    Drawing.DrawText(unit.HPBarPosition.X + _xOffset + _width + textOffsetX, unit.HPBarPosition.Y + _yOffset - textOffsetY,
+                        Color.White, unit.IsRendKillable() ? "Killable!" : percent + "%", 20);
+                }
+            }
         }
     }
 }
